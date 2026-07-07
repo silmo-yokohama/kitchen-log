@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Write(/viewer/**)",
+      "Edit(/viewer/**)",
+      "Edit(/docs/workflows/**)",
+      "Bash(npm install --prefix viewer)",
+      "Bash(npm run dev --prefix viewer)",
+      "Bash(npm run build --prefix viewer)",
+      "Bash(npm run test --prefix viewer)",
+      "Bash(npx astro check)"
+    ]
+  }
+}
