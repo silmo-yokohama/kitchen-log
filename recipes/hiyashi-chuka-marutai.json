@@ -1,0 +1,44 @@
+{
+  "id": "hiyashi-chuka-marutai",
+  "title": "マルタイで作る冷やし中華",
+  "dish": "hiyashi-chuka",
+  "tags": ["夏", "麺類", "あっさり"],
+  "servings": 2,
+  "ingredientSections": [
+    {
+      "section": "麺・具材",
+      "items": [
+        { "id": "noodle", "name": "マルタイ棒ラーメン", "amount": 2, "unit": "束" },
+        { "id": "cucumber", "name": "きゅうり", "amount": 1, "unit": "本" },
+        { "id": "ham", "name": "ロースハム", "amount": 4, "unit": "枚" }
+      ]
+    },
+    {
+      "section": "合わせ調味料",
+      "items": [
+        { "id": "sauce_soy", "name": "醤油", "amount": 2, "unit": "大さじ" },
+        { "id": "sauce_vinegar", "name": "酢", "amount": 2, "unit": "大さじ" },
+        { "id": "sauce_sugar", "name": "砂糖", "amount": 1, "unit": "大さじ" }
+      ]
+    }
+  ],
+  "steps": [
+    "{{noodle}}を鍋に入れ、袋の表示時間通り茹でたら冷水でしっかり締める。",
+    "{{cucumber}}は細切りにし、{{ham}}も同じ太さの細切りにする。",
+    "{{sauce_soy}}・{{sauce_vinegar}}・{{sauce_sugar}}を混ぜ合わせ、砂糖が溶けるまでよく混ぜて合わせ調味料を作る。",
+    "器に麺を盛り、{{cucumber}}と{{ham}}をのせ、合わせ調味料を回しかける。"
+  ],
+  "nutrition": {
+    "energyKcal": 420,
+    "proteinG": 18.2,
+    "fatG": 12.5,
+    "carbohydrateG": 58.0,
+    "saltG": 3.1
+  },
+  "benefits": [],
+  "cautions": ["食塩相当量がやや高め（1人前の目標値の4割強）"],
+  "balance": "野菜量が控えめ。既存レシピの「ナムル」等の副菜と組み合わせると良い。",
+  "source": { "type": "cookgo", "note": "PDF共有経由" },
+  "createdAt": "2026-07-07",
+  "updatedAt": "2026-07-07"
+}

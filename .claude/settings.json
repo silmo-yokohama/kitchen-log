@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Write(/recipes/**)",
+      "Edit(/recipes/**)",
+      "Edit(/profile.md)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git status)",
+      "Bash(npm run validate:recipes --prefix viewer)",
+      "WebFetch"
+    ]
+  }
+}
