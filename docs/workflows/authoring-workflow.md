@@ -16,8 +16,10 @@
 1. 入口の種類（cookgo/url/text/zero）を確認し、元情報を取得する
 2. `profile.md` を読み、清水・パートナー・共通の好みを確認する
 3. `recipes/*.json` を Grep し、食材名・タグの表記を既存のものに合わせる（`naming-conventions.md` 参照）
-4. `ingredientSections`（フェーズ別・id付き）と `steps`（`{{id}}` 参照）を組み立てる。手順文は `step-writing-guidelines.md` に従う
-5. `nutrition-rules.md` の計算式で栄養価を算出し、`benefits`/`cautions`/`balance` を記述する
-6. `npm run validate:recipes --prefix viewer` を実行し、スキーマ検証を通す
+4. 新規レシピは `docs/workflows/recipe-template.json` をコピーして作成する（既存の別レシピファイルのコピーは禁止。`naming-conventions.md` 参照）
+5. `ingredientSections`（フェーズ別・id付き）と `steps`（`{{id}}` 参照）を組み立てる。手順文は `step-writing-guidelines.md` に従う
+6. `nutrition-rules.md` の計算式で栄養価を算出し、`benefits`/`cautions`/`balance` を記述する
 7. ユーザーに確定前レビューを提示する
-8. 確定後、`recipes/<id>.json` として保存し、`git add` / `git commit` する
+8. 確定後、`recipes/<id>.json` として保存し、`git add` / `git commit` / `git push` する。スキーマ検証はGitHub ActionsのCIが自動で行う（ローカルでの検証実行は行わない）
+
+> **未確定事項**: push後の運用（デフォルトブランチに直接pushするか、ブランチ＋PR経由にするか）は、Step1で実地検証してから決定する。現時点では暫定的にデフォルトブランチへの直接pushを想定して記述している。

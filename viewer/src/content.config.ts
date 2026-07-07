@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 import { recipeSchema } from './schemas/recipe';
 
 const recipes = defineCollection({
-  loader: glob({ pattern: '**/*.json', base: '../../recipes' }),
+  loader: glob({ pattern: '**/*.json', base: '../recipes' }),
   schema: recipeSchema,
 });
 
