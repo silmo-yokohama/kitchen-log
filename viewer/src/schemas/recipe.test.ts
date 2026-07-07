@@ -90,4 +90,18 @@ describe('recipeSchema', () => {
     const result = recipeSchema.safeParse(broken);
     expect(result.success).toBe(false);
   });
+
+  it('rejects a qualitative unit paired with a non-null amount', () => {
+    const broken = {
+      ...validRecipe,
+      ingredientSections: [
+        {
+          section: '材料',
+          items: [{ id: 'salt2', name: '塩', amount: 1, unit: '少々' }],
+        },
+      ],
+    };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
 });

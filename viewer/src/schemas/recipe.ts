@@ -16,8 +16,9 @@ const ingredientItemSchema = z
     unit: z.enum(UNIT_VALUES),
   })
   .refine(
-    (item) => QUALITATIVE_UNITS.includes(item.unit) || item.amount !== null,
-    { message: 'amount is required unless unit is 少々/適量/ひとつまみ', path: ['amount'] },
+    (item) =>
+      QUALITATIVE_UNITS.includes(item.unit) ? item.amount === null : item.amount !== null,
+    { message: 'amount must be null when unit is 少々/適量/ひとつまみ, and required otherwise', path: ['amount'] },
   );
 
 const ingredientSectionSchema = z.object({
