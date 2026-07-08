@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'astro/zod';
 
 const UNIT_VALUES = [
   'g', 'ml', '大さじ', '小さじ', 'カップ',
