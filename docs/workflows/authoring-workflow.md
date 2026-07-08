@@ -26,7 +26,7 @@ id・ファイル名・スキーマ上の型などの実装上の詳細はClaude
 2. `profile.md` を読み、清水・パートナー・共通の好みを確認する
 3. `recipes/*.json` を Grep し、食材名・タグの表記を既存のものに合わせる（`naming-conventions.md` 参照）
 4. 新規レシピは `docs/workflows/recipe-template.json` をコピーして作成する（既存の別レシピファイルのコピーは禁止。`naming-conventions.md` 参照）
-5. `ingredientSections`（フェーズ別・id付き）と `steps`（`{{id}}` 参照）を組み立てる。手順文は `step-writing-guidelines.md` に従う
+5. `ingredientSections`（フェーズ別・id付き）と `stepSections`（下ごしらえ／調理／盛り付け等のフェーズ別、`{{id}}` 参照）を組み立てる。手順文は `step-writing-guidelines.md` に従う
 6. `nutrition-rules.md` の計算式で栄養価を算出し、`benefits`/`cautions`/`balance` を記述する
 7. ユーザーに確定前レビューを提示する
 8. 確定後、`recipes/<id>.json` として保存する
