@@ -15,37 +15,48 @@ const ingredientItemSchema = z
     amount: z.number().positive().nullable(),
     unit: z.enum(UNIT_VALUES),
   })
+  .strict()
   .refine(
     (item) =>
       QUALITATIVE_UNITS.includes(item.unit) ? item.amount === null : item.amount !== null,
     { message: 'amount must be null when unit is 少々/適量/ひとつまみ, and required otherwise', path: ['amount'] },
   );
 
-const ingredientSectionSchema = z.object({
-  section: z.string().min(1),
-  items: z.array(ingredientItemSchema).min(1),
-});
+const ingredientSectionSchema = z
+  .object({
+    section: z.string().min(1),
+    items: z.array(ingredientItemSchema).min(1),
+  })
+  .strict();
 
-const stepSectionSchema = z.object({
-  section: z.string().min(1),
-  steps: z.array(z.string().min(1)).min(1),
-});
+const stepSectionSchema = z
+  .object({
+    section: z.string().min(1),
+    steps: z.array(z.string().min(1)).min(1),
+  })
+  .strict();
 
-const nutritionSchema = z.object({
-  energyKcal: z.number().nonnegative(),
-  proteinG: z.number().nonnegative(),
-  fatG: z.number().nonnegative(),
-  carbohydrateG: z.number().nonnegative(),
-  saltG: z.number().nonnegative(),
-});
+const nutritionSchema = z
+  .object({
+    energyKcal: z.number().nonnegative(),
+    proteinG: z.number().nonnegative(),
+    fatG: z.number().nonnegative(),
+    carbohydrateG: z.number().nonnegative(),
+    saltG: z.number().nonnegative(),
+  })
+  .strict();
 
-const sourceSchema = z.object({
-  type: z.enum(['cookgo', 'url', 'text', 'zero']),
-  url: z.string().url().optional(),
-  note: z.string().optional(),
-});
-
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const sourceSchema = z
+  .object({
+    type: z.enum(['cookgo', 'url', 'text', 'zero']),
+    url: z.string().url().optional(),
+    note: z.string().optional(),
+  })
+  .strict()
+  .refine((source) => source.type !== 'url' || source.url !== undefined, {
+    message: "source.url is required when source.type is 'url'",
+    path: ['url'],
+  });
 
 export const recipeSchema = z
   .object({
@@ -61,9 +72,10 @@ export const recipeSchema = z
     cautions: z.array(z.string()),
     balance: z.string(),
     source: sourceSchema,
-    createdAt: z.string().regex(DATE_PATTERN),
-    updatedAt: z.string().regex(DATE_PATTERN),
+    createdAt: z.string().date(),
+    updatedAt: z.string().date(),
   })
+  .strict()
   .refine(
     (recipe) => {
       const ids = recipe.ingredientSections.flatMap((section) => section.items.map((item) => item.id));

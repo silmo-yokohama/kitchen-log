@@ -143,4 +143,44 @@ describe('recipeSchema', () => {
     const result = recipeSchema.safeParse(broken);
     expect(result.success).toBe(false);
   });
+
+  it('rejects an unknown top-level property', () => {
+    const broken = { ...validRecipe, memo: '未知のプロパティ' };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects an unknown property inside an ingredient item', () => {
+    const broken = {
+      ...validRecipe,
+      ingredientSections: [
+        {
+          section: '材料',
+          items: [
+            { id: 'flour', name: '小麦粉', amount: 100, unit: 'g', note: 'ふるっておく' },
+          ],
+        },
+      ],
+    };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects an unknown property inside source', () => {
+    const broken = { ...validRecipe, source: { type: 'cookgo', memo: 'x' } };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a calendar-invalid date', () => {
+    const broken = { ...validRecipe, createdAt: '2026-13-99' };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects source.type 'url' without source.url", () => {
+    const broken = { ...validRecipe, source: { type: 'url' } };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
 });
