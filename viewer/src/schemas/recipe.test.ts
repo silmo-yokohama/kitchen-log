@@ -20,7 +20,16 @@ const validRecipe = {
       ],
     },
   ],
-  steps: ['{{sauce_sake}}を混ぜて合わせ調味料を作る。', '{{stirfry_sake}}を加え、{{salt}}で味を調える。'],
+  stepSections: [
+    {
+      section: '下ごしらえ',
+      steps: ['{{sauce_sake}}を混ぜて合わせ調味料を作る。'],
+    },
+    {
+      section: '調理',
+      steps: ['{{stirfry_sake}}を加え、{{salt}}で味を調える。'],
+    },
+  ],
   nutrition: {
     energyKcal: 420,
     proteinG: 18.2,
@@ -100,6 +109,21 @@ describe('recipeSchema', () => {
           items: [{ id: 'salt2', name: '塩', amount: 1, unit: '少々' }],
         },
       ],
+    };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a recipe with an empty stepSections array', () => {
+    const broken = { ...validRecipe, stepSections: [] };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a stepSection with no steps', () => {
+    const broken = {
+      ...validRecipe,
+      stepSections: [{ section: '下ごしらえ', steps: [] }],
     };
     const result = recipeSchema.safeParse(broken);
     expect(result.success).toBe(false);
