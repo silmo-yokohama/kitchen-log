@@ -4,7 +4,7 @@ description: 4つの入口（CookGo/URL/テキスト/ゼロベース）のいず
 
 以下の手順を、省略せず順番通りに実行すること。詳細ルールは `docs/workflows/authoring-workflow.md` を参照。
 
-1. ユーザーに入口の種類（cookgo/url/text/zero）を確認し、元情報を取得する
+1. 新規登録か既存レシピの編集かを確認する。編集の場合は `docs/workflows/authoring-workflow.md` の「既存レシピの編集」の流れに切り替える。新規登録の場合、ユーザーに入口の種類（cookgo/url/text/zero）を確認し、元情報を取得する
 2. `profile.md` を読み、好みを確認する
 3. `recipes/*.json` をGrepし、食材名・タグの表記を既存のものに合わせる
 4. 新規レシピは `docs/workflows/recipe-template.json` をコピーして作成する（既存の別レシピファイルのコピーは禁止）
