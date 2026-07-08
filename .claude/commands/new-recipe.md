@@ -11,4 +11,6 @@ description: 4つの入口（CookGo/URL/テキスト/ゼロベース）のいず
 5. `ingredientSections`（フェーズ別・id付き）と `steps`（`{{id}}`参照、`docs/workflows/step-writing-guidelines.md`準拠）を組み立てる
 6. `docs/workflows/nutrition-rules.md` の計算式で栄養価を算出し、`benefits`/`cautions`/`balance`を記述する
 7. ユーザーに確定前レビューを提示し、承認を得る
-8. 承認後、`recipes/<id>.json` に保存し、`git add` / `git commit` / `git push` を行う。スキーマ検証はGitHub ActionsのCIが自動で行う（ローカルでの検証実行は行わない）。push後の運用（デフォルトブランチに直接pushするか、ブランチ＋PR経由にするか）は未確定であり、Step1で実地検証してから決定する
+8. 承認後、`recipes/<id>.json` に保存し、`git add` / `git commit` を行う。`master` に直接pushせず、`recipe/<id>` のような新規ブランチへpushしてPRを作成する（クラウド環境が自動でPRを作成しない場合は `gh pr create` を使う）
+9. スキーマ検証はGitHub ActionsのCIがPR上で自動的に行う（ローカルでの検証実行は行わない）。CIがgreenになったことを確認する
+10. ユーザーに最終承認を得た上で、`gh pr merge` でマージする。自動マージはせず、マージの都度ユーザーの確認を経る
