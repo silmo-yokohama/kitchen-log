@@ -9,6 +9,8 @@
       "Bash(npm run build --prefix viewer)",
       "Bash(npm run test --prefix viewer)",
       "Bash(npx astro check)",
+      "Bash(git checkout -b *)",
+      "Bash(gh pr create *)",
       "Bash(gh pr list *)",
       "Bash(gh pr view *)",
       "Bash(gh pr checks *)",

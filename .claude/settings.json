@@ -6,8 +6,11 @@
       "Edit(/profile.md)",
       "Bash(git add *)",
       "Bash(git commit *)",
+      "Bash(git checkout -b *)",
       "Bash(git push *)",
       "Bash(git status)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr checks *)",
       "Bash(npm run validate:recipes --prefix viewer)",
       "WebFetch"
     ]
