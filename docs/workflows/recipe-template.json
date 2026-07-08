@@ -12,7 +12,12 @@
       ]
     }
   ],
-  "steps": [""],
+  "stepSections": [
+    {
+      "section": "",
+      "steps": [""]
+    }
+  ],
   "nutrition": {
     "energyKcal": 0,
     "proteinG": 0,

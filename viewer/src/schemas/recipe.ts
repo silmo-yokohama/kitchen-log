@@ -26,6 +26,11 @@ const ingredientSectionSchema = z.object({
   items: z.array(ingredientItemSchema).min(1),
 });
 
+const stepSectionSchema = z.object({
+  section: z.string().min(1),
+  steps: z.array(z.string().min(1)).min(1),
+});
+
 const nutritionSchema = z.object({
   energyKcal: z.number().nonnegative(),
   proteinG: z.number().nonnegative(),
@@ -49,7 +54,7 @@ export const recipeSchema = z
     tags: z.array(z.string().min(1)),
     servings: z.number().int().positive(),
     ingredientSections: z.array(ingredientSectionSchema).min(1),
-    steps: z.array(z.string().min(1)).min(1),
+    stepSections: z.array(stepSectionSchema).min(1),
     nutrition: nutritionSchema,
     benefits: z.array(z.string()),
     cautions: z.array(z.string()),
