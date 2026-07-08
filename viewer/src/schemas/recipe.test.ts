@@ -205,4 +205,24 @@ describe('recipeSchema', () => {
     const result = recipeSchema.safeParse(noPlaceholders);
     expect(result.success).toBe(true);
   });
+
+  it('accepts newly added count units like 丁 and パック', () => {
+    const withNewUnits = {
+      ...validRecipe,
+      ingredientSections: [
+        {
+          section: '材料',
+          items: [
+            { id: 'tofu', name: '木綿豆腐', amount: 1, unit: '丁' },
+            { id: 'natto', name: '納豆', amount: 1, unit: 'パック' },
+          ],
+        },
+      ],
+      stepSections: [
+        { section: '調理', steps: ['{{tofu}}と{{natto}}を混ぜる。'] },
+      ],
+    };
+    const result = recipeSchema.safeParse(withNewUnits);
+    expect(result.success).toBe(true);
+  });
 });
