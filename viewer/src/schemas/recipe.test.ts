@@ -128,4 +128,19 @@ describe('recipeSchema', () => {
     const result = recipeSchema.safeParse(broken);
     expect(result.success).toBe(false);
   });
+
+  it('accepts a valid source.url', () => {
+    const withUrl = {
+      ...validRecipe,
+      source: { type: 'url', url: 'https://recipe.rakuten.co.jp/recipe/1710067789/' },
+    };
+    const result = recipeSchema.safeParse(withUrl);
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects a malformed source.url', () => {
+    const broken = { ...validRecipe, source: { type: 'url', url: 'not-a-valid-url' } };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
 });

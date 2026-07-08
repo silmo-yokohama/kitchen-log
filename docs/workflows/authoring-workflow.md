@@ -7,9 +7,14 @@
 レシピの元情報は次の4種類のいずれかから得る。どの入口でも、最終的には同じ `recipeSchema`（`viewer/src/schemas/recipe.ts`）に準拠したJSONに変換する。
 
 1. **cookgo**: CookGoアプリの共有→PDF出力を経由して渡された画像ベースのPDF。文字として読み取れないため、内容を読み上げてもらうか、画像を直接解析して材料・手順を復元する
-2. **url**: レシピサイトのURL。WebFetchで取得できる範囲の情報を元にする。取得可否の実績は`docs/workflows/recipe-site-compatibility.md`を参照。YouTube等の動画プラットフォームは概要欄・字幕がWebFetchで取得できないため対象外とし、動画ベースのレシピは最初からテキスト貼り付け（type: text）に切り替えるようユーザーに伝える（ログイン必須のInstagram等も同様に対象外）
+2. **url**: レシピサイトのURL。WebFetchで取得できる範囲の情報を元にする。取得可否の実績は`docs/workflows/recipe-site-compatibility.md`を参照。YouTube等の動画プラットフォームは概要欄・字幕がWebFetchで取得できないため対象外とし、動画ベースのレシピは最初からテキスト貼り付け（type: text）に切り替えるようユーザーに伝える（ログイン必須のInstagram等も同様に対象外）。取得したURLは`source.url`に記録する
 3. **text**: ユーザーが貼り付けた生のテキスト（材料・手順の書き出し等）
-4. **zero**: 冷蔵庫の中身や気分等から、ゼロベースで相談しながら組み立てる。着想が欲しい場合は、`WebSearch`の`allowed_domains`に`docs/workflows/recipe-site-compatibility.md`記載のドメインを指定して参考レシピを検索し、`WebFetch`で内容を取得して材料・分量・作り方の参考にしてよい。特定の1件を強く参考にした場合でも`source.type`は`zero`のままとし、`source.note`に参考にしたレシピのURLを記録する
+4. **zero**: 冷蔵庫の中身や気分等から、ゼロベースで相談しながら組み立てる。着想が欲しい場合は、`WebSearch`の`allowed_domains`に`docs/workflows/recipe-site-compatibility.md`記載のドメインを指定して参考レシピを検索し、`WebFetch`で内容を取得して材料・分量・作り方の参考にしてよい。特定の1件を強く参考にした場合でも`source.type`は`zero`のままとし、参考にしたレシピのURLは`source.url`に記録する
+
+## `source`フィールドの使い分け
+
+- `source.url`: 出典となる1つのURL（`url`入口で取得したページ、または`zero`入口で強く参考にしたページ）。ビューアでリンクを張れるよう、URL単体で機械可読な形にしておく
+- `source.note`: そのレシピがどのようなやり取りで生まれたか（相談の内容、アレンジの経緯、CookGoからの補足情報等）を書く自由記述。URLを書く場所ではない
 
 ## ユーザーとの会話ルール
 
