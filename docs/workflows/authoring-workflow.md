@@ -29,8 +29,7 @@ id・ファイル名・スキーマ上の型などの実装上の詳細はClaude
 5. `ingredientSections`（フェーズ別・id付き）と `steps`（`{{id}}` 参照）を組み立てる。手順文は `step-writing-guidelines.md` に従う
 6. `nutrition-rules.md` の計算式で栄養価を算出し、`benefits`/`cautions`/`balance` を記述する
 7. ユーザーに確定前レビューを提示する
-8. 確定後、`recipes/<id>.json` として保存し、`git add` / `git commit` する。`master` に直接pushせず、`recipe/<id>` のような新規ブランチへpushしてPRを作成する（クラウド環境が自動でPRを作成しない場合は `gh pr create` を使う）
-9. スキーマ検証はGitHub ActionsのCIがPR上で自動的に行う（ローカルでの検証実行は行わない）。CIがgreenになったことを確認する
-10. ユーザーに最終承認を得た上で、`gh pr merge` でマージする。自動マージはせず、マージの都度ユーザーの確認を経る
+8. 確定後、`recipes/<id>.json` として保存する
+9. `/merge-recipe` を呼び出し、ブランチ作成からmasterへのマージまでを行う（手順の詳細は `.claude/commands/merge-recipe.md` 参照）
 
-> **決定事項（Step1実地検証より）**: push後の運用は「ブランチ＋PR経由」に確定した。`master`には保護ルールがなく直接pushも技術的には可能だが、Step0・Step1双方の実運用でブランチ＋PR方式に収束したため、これを正式ルールとする。
+> **決定事項（Step1実地検証より）**: push後の運用は「ブランチ＋PR経由」に確定した。`master`には保護ルールがなく直接pushも技術的には可能だが、Step0・Step1双方の実運用でブランチ＋PR方式に収束したため、これを正式ルールとする。マージまでの具体的な手順は `/merge-recipe` コマンドに切り出し、レシピ登録以外の変更（ドキュメント修正等）でも再利用できるようにしている。
