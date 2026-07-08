@@ -2,6 +2,7 @@ name: Validate recipes
 
 on:
   push:
+    branches: [master]
   pull_request:
 
 jobs:
@@ -12,5 +13,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: viewer/package-lock.json
       - run: npm ci --prefix viewer
-      - run: npm run validate:recipes --prefix viewer
+      - run: npm run test --prefix viewer
