@@ -183,4 +183,26 @@ describe('recipeSchema', () => {
     const result = recipeSchema.safeParse(broken);
     expect(result.success).toBe(false);
   });
+
+  it('rejects a step referencing an unknown ingredient id', () => {
+    const broken = {
+      ...validRecipe,
+      stepSections: [
+        { section: '調理', steps: ['{{no_such_id}}を加えて中火で3分ほど炒める。'] },
+      ],
+    };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts steps that contain no placeholders at all', () => {
+    const noPlaceholders = {
+      ...validRecipe,
+      stepSections: [
+        { section: '調理', steps: ['フライパンを中火で1分ほど温める。'] },
+      ],
+    };
+    const result = recipeSchema.safeParse(noPlaceholders);
+    expect(result.success).toBe(true);
+  });
 });

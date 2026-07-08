@@ -76,12 +76,29 @@ export const recipeSchema = z
     updatedAt: z.string().date(),
   })
   .strict()
-  .refine(
-    (recipe) => {
-      const ids = recipe.ingredientSections.flatMap((section) => section.items.map((item) => item.id));
-      return new Set(ids).size === ids.length;
-    },
-    { message: 'ingredient ids must be unique across all sections', path: ['ingredientSections'] },
-  );
+  .superRefine((recipe, ctx) => {
+    const ids = recipe.ingredientSections.flatMap((section) => section.items.map((item) => item.id));
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['ingredientSections'],
+        message: 'ingredient ids must be unique across all sections',
+      });
+    }
+    const idSet = new Set(ids);
+    recipe.stepSections.forEach((section, sectionIndex) => {
+      section.steps.forEach((step, stepIndex) => {
+        for (const match of step.matchAll(/\{\{([^{}]+)\}\}/g)) {
+          if (!idSet.has(match[1])) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['stepSections', sectionIndex, 'steps', stepIndex],
+              message: `unknown ingredient id "${match[1]}" referenced in step`,
+            });
+          }
+        }
+      });
+    });
+  });
 
 export type Recipe = z.infer<typeof recipeSchema>;
