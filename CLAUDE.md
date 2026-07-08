@@ -6,7 +6,11 @@
 - `profile.md`: 好みプロファイル（共通・清水・パートナー）
 - `viewer/`: Astro製PWAビューア（Step2以降）
 
-レシピを登録・編集する際は、必ず `/new-recipe` コマンドを使うこと。以下のルールを常に守る。
+すべての作業において、以下のルールを常に守る。
+
+@docs/workflows/language-policy.md
+
+レシピを登録・編集する際は、必ず `/new-recipe` コマンドを使うこと。以下のルールも常に守る。
 
 @docs/workflows/authoring-workflow.md
 @docs/workflows/nutrition-rules.md

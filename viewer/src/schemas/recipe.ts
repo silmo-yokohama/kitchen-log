@@ -41,6 +41,7 @@ const nutritionSchema = z.object({
 
 const sourceSchema = z.object({
   type: z.enum(['cookgo', 'url', 'text', 'zero']),
+  url: z.string().url().optional(),
   note: z.string().optional(),
 });
 
