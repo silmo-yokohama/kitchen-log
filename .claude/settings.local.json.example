@@ -8,7 +8,11 @@
       "Bash(npm run dev --prefix viewer)",
       "Bash(npm run build --prefix viewer)",
       "Bash(npm run test --prefix viewer)",
-      "Bash(npx astro check)"
+      "Bash(npx astro check)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh pr merge *)"
     ]
   }
 }
