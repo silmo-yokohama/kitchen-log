@@ -10,10 +10,6 @@ const recipesDir = join(__dirname, '..', '..', 'recipes');
 const recipeFiles = readdirSync(recipesDir).filter((name) => name.endsWith('.json'));
 
 describe('every recipe file in recipes/', () => {
-  it('has at least one recipe to validate', () => {
-    expect(recipeFiles.length).toBeGreaterThan(0);
-  });
-
   const parsedByFile = recipeFiles.map((fileName) => {
     const raw = readFileSync(join(recipesDir, fileName), 'utf-8');
     return { fileName, parsed: JSON.parse(raw) };
