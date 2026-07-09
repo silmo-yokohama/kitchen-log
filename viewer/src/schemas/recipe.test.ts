@@ -143,4 +143,86 @@ describe('recipeSchema', () => {
     const result = recipeSchema.safeParse(broken);
     expect(result.success).toBe(false);
   });
+
+  it('rejects an unknown top-level property', () => {
+    const broken = { ...validRecipe, memo: '未知のプロパティ' };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects an unknown property inside an ingredient item', () => {
+    const broken = {
+      ...validRecipe,
+      ingredientSections: [
+        {
+          section: '材料',
+          items: [
+            { id: 'flour', name: '小麦粉', amount: 100, unit: 'g', note: 'ふるっておく' },
+          ],
+        },
+      ],
+    };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects an unknown property inside source', () => {
+    const broken = { ...validRecipe, source: { type: 'cookgo', memo: 'x' } };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a calendar-invalid date', () => {
+    const broken = { ...validRecipe, createdAt: '2026-13-99' };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects source.type 'url' without source.url", () => {
+    const broken = { ...validRecipe, source: { type: 'url' } };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a step referencing an unknown ingredient id', () => {
+    const broken = {
+      ...validRecipe,
+      stepSections: [
+        { section: '調理', steps: ['{{no_such_id}}を加えて中火で3分ほど炒める。'] },
+      ],
+    };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts steps that contain no placeholders at all', () => {
+    const noPlaceholders = {
+      ...validRecipe,
+      stepSections: [
+        { section: '調理', steps: ['フライパンを中火で1分ほど温める。'] },
+      ],
+    };
+    const result = recipeSchema.safeParse(noPlaceholders);
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts newly added count units like 丁 and パック', () => {
+    const withNewUnits = {
+      ...validRecipe,
+      ingredientSections: [
+        {
+          section: '材料',
+          items: [
+            { id: 'tofu', name: '木綿豆腐', amount: 1, unit: '丁' },
+            { id: 'natto', name: '納豆', amount: 1, unit: 'パック' },
+          ],
+        },
+      ],
+      stepSections: [
+        { section: '調理', steps: ['{{tofu}}と{{natto}}を混ぜる。'] },
+      ],
+    };
+    const result = recipeSchema.safeParse(withNewUnits);
+    expect(result.success).toBe(true);
+  });
 });
