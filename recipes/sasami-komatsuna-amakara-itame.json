@@ -1,0 +1,71 @@
+{
+  "id": "sasami-komatsuna-amakara-itame",
+  "title": "鶏ささみと小松菜の甘辛炒め",
+  "dish": "komatsuna-amakara-itame",
+  "tags": ["副菜", "時短", "鶏肉", "甘辛"],
+  "servings": 2,
+  "ingredientSections": [
+    {
+      "section": "下ごしらえ",
+      "items": [
+        { "id": "sasami", "name": "鶏ささみ", "amount": 90, "unit": "g" },
+        { "id": "salt-pepper-marinade", "name": "塩こしょう（下味用）", "amount": null, "unit": "少々" },
+        { "id": "katakuriko", "name": "片栗粉", "amount": 1, "unit": "小さじ" },
+        { "id": "chicken-stock", "name": "鶏がらスープの素", "amount": 0.5, "unit": "小さじ" },
+        { "id": "soy-sauce", "name": "醤油", "amount": 2, "unit": "小さじ" },
+        { "id": "mirin", "name": "みりん", "amount": 1, "unit": "大さじ" }
+      ]
+    },
+    {
+      "section": "調理",
+      "items": [
+        { "id": "komatsuna", "name": "小松菜", "amount": 200, "unit": "g" },
+        { "id": "oil", "name": "油", "amount": 1, "unit": "大さじ" },
+        { "id": "pepper-finish", "name": "こしょう（仕上げ用）", "amount": null, "unit": "少々" },
+        { "id": "sugar", "name": "砂糖", "amount": 1, "unit": "小さじ" },
+        { "id": "salt-pepper-taste", "name": "塩こしょう（味を見て）", "amount": null, "unit": "適量" }
+      ]
+    }
+  ],
+  "stepSections": [
+    {
+      "section": "下ごしらえ",
+      "steps": [
+        "{{sasami}}は筋を取り除いて一口大のそぎ切りにし、{{salt-pepper-marinade}}をふって軽くもみ込む。5分ほど置いて下味をなじませたら、焼く直前に{{katakuriko}}を薄くまぶす（脂の少ないささみでも、加熱後にパサつきにくくなる下ごしらえ）。",
+        "小さめの器に{{chicken-stock}}・{{soy-sauce}}・{{mirin}}を合わせて混ぜ溶かし、合わせ調味料を作っておく。",
+        "{{komatsuna}}はよく洗い、茎と葉に切り分ける。茎は5cm幅に切り、葉は3〜4cm幅のざく切りにする。"
+      ]
+    },
+    {
+      "section": "調理",
+      "steps": [
+        "フライパンに{{oil}}を引いて強火で熱し、下味をつけた{{sasami}}を広げ入れる。触らずに1分ほど焼き、片面が白っぽく色づいたら裏返して{{komatsuna}}の茎を加え、1分ほど炒め合わせる。",
+        "作っておいた合わせ調味料を加え、茎に味を絡めながら1分ほど炒める。",
+        "{{komatsuna}}の葉を加えて{{pepper-finish}}を振り、葉がしんなりとして鮮やかな緑色になるまで炒める。{{sugar}}は焦げやすいので、火を止める直前に加えてさっと混ぜ合わせる。",
+        "味を見て、薄ければ{{salt-pepper-taste}}で調える。器に盛り付けて完成。"
+      ]
+    }
+  ],
+  "nutrition": {
+    "energyKcal": 138,
+    "proteinG": 12.1,
+    "fatG": 6.5,
+    "carbohydrateG": 9.4,
+    "saltG": 1.3
+  },
+  "benefits": [
+    "鶏ささみは脂質が少ない良質なたんぱく質源で、1人前あたり約12.1gのたんぱく質が摂れる",
+    "小松菜から1人前あたり約1.9gの食物繊維が摂れる"
+  ],
+  "cautions": [
+    "食塩相当量は1人前あたり約1.3gで、成人の食塩摂取目標値（男性7.5g未満/日、女性6.5g未満/日）と比べると低め。ただし味を見て加える塩こしょう分は計算に含めていないため、味付けを濃くする場合は実際の食塩相当量はやや高くなる"
+  ],
+  "balance": "低カロリー・高たんぱくな副菜のため、主菜にはボリュームのある「至高のキムチチゲ（鶏肉バージョン）」のような一皿と組み合わせると、全体の栄養バランスが取りやすい。",
+  "source": {
+    "type": "cookgo",
+    "url": "https://youtube.com/watch?v=MMzYq7-8SWc&si=9luovqCgRxckgjFl",
+    "note": "CookGo共有ページ「豚と小松菜の甘辛炒め」（http://cookgo.life/share/JAFRBP）の材料・手順をもとに登録。元ページは2人前表記だったが、具材量（小松菜200g・肉90g）から見て副菜1品分のボリュームと判断し、2人前の副菜として登録した。豚バラ肉は、清水がダイエット中で脂質を抑えたいこと、パートナーが脂っこい料理を好まないことから、脂質の少ない鶏ささみへ置き換えてアレンジ（パサつき防止に片栗粉をまぶす下ごしらえを追加）。鶏もも肉で代用する場合は、そぎ切り・片栗粉の下ごしらえは不要（もも肉は脂があるためパサつきにくい）で、火が通るまでやや長めに焼くとよい。参照元は共有ページに記載のYouTube動画。"
+  },
+  "createdAt": "2026-07-09",
+  "updatedAt": "2026-07-09"
+}
