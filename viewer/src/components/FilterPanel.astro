@@ -1,0 +1,105 @@
+---
+interface Props {
+  facets: { categories: string[]; ingredients: string[]; tags: string[] };
+}
+
+const { facets } = Astro.props;
+// 登録レシピで実際に使われている値だけを選択肢として出す（pages側で集計済み）
+const rows = [
+  { key: 'categories', label: 'カテゴリー', values: facets.categories },
+  { key: 'ingredients', label: '素材', values: facets.ingredients },
+  { key: 'tags', label: 'タグ', values: facets.tags },
+].filter((row) => row.values.length > 0);
+---
+
+<div class="filter-panel" id="filter-panel">
+  <div class="wrap">
+    {
+      rows.map((row) => (
+        <div class="facet-row">
+          <span class="facet-label" id={`facet-label-${row.key}`}>{row.label}</span>
+          <div class="facet-chips" role="group" aria-labelledby={`facet-label-${row.key}`} data-facet={row.key}>
+            {row.values.map((value) => (
+              <button type="button" class="facet-chip" data-value={value} aria-pressed="false">
+                {value}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+    <button type="button" class="filter-reset" id="filter-reset" hidden>絞り込みを解除</button>
+  </div>
+</div>
+
+<script>
+  // 選択式絞り込みIsland: 同一ファセット内はOR、ファセット間はAND。
+  // 選択状態はURLクエリ（?categories=a,b&...）と同期する。
+  const FACETS = ['categories', 'ingredients', 'tags'] as const;
+  type Facet = (typeof FACETS)[number];
+
+  const panel = document.getElementById('filter-panel');
+  const resetButton = document.getElementById('filter-reset');
+  const noResults = document.getElementById('no-results');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-recipe-card]'));
+
+  if (panel && resetButton) {
+    const chipsOf = (facet: Facet) =>
+      Array.from(panel.querySelectorAll<HTMLButtonElement>(`[data-facet="${facet}"] .facet-chip`));
+
+    const selectedValues = (facet: Facet) =>
+      chipsOf(facet)
+        .filter((chip) => chip.getAttribute('aria-pressed') === 'true')
+        .map((chip) => chip.dataset.value ?? '');
+
+    const apply = () => {
+      let visibleCount = 0;
+      const selected = Object.fromEntries(FACETS.map((f) => [f, selectedValues(f)])) as Record<Facet, string[]>;
+
+      for (const card of cards) {
+        const show = FACETS.every((facet) => {
+          const wanted = selected[facet];
+          if (wanted.length === 0) return true;
+          const have = (card.dataset[facet] ?? '').split(',');
+          return wanted.some((value) => have.includes(value));
+        });
+        card.hidden = !show;
+        if (show) visibleCount += 1;
+      }
+
+      if (noResults) noResults.hidden = visibleCount > 0;
+      resetButton.hidden = FACETS.every((facet) => selected[facet].length === 0);
+
+      const params = new URLSearchParams();
+      for (const facet of FACETS) {
+        if (selected[facet].length > 0) params.set(facet, selected[facet].join(','));
+      }
+      const query = params.toString();
+      history.replaceState(null, '', query ? `?${query}` : window.location.pathname);
+    };
+
+    panel.addEventListener('click', (event) => {
+      const chip = (event.target as HTMLElement).closest<HTMLButtonElement>('.facet-chip');
+      if (!chip) return;
+      chip.setAttribute('aria-pressed', chip.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      apply();
+    });
+
+    resetButton.addEventListener('click', () => {
+      for (const facet of FACETS) {
+        for (const chip of chipsOf(facet)) chip.setAttribute('aria-pressed', 'false');
+      }
+      apply();
+    });
+
+    // 初期表示: URLクエリから選択状態を復元
+    const params = new URLSearchParams(window.location.search);
+    for (const facet of FACETS) {
+      const values = params.get(facet)?.split(',') ?? [];
+      for (const chip of chipsOf(facet)) {
+        if (values.includes(chip.dataset.value ?? '')) chip.setAttribute('aria-pressed', 'true');
+      }
+    }
+    apply();
+  }
+</script>

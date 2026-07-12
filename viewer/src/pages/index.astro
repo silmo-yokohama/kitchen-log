@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import FilterPanel from '../components/FilterPanel.astro';
+import RecipeCard from '../components/RecipeCard.astro';
+
+const recipes = (await getCollection('recipes')).sort((a, b) =>
+  `${a.data.createdAt}${a.data.id}`.localeCompare(`${b.data.createdAt}${b.data.id}`),
+);
+
+const facets = {
+  categories: [...new Set(recipes.flatMap((r) => r.data.categories))],
+  ingredients: [...new Set(recipes.flatMap((r) => r.data.mainIngredients))],
+  tags: [...new Set(recipes.flatMap((r) => r.data.tags))],
+};
+
+const latestUpdated = recipes
+  .map((r) => r.data.updatedAt)
+  .sort()
+  .at(-1);
+const latestLabel = latestUpdated
+  ? new Date(latestUpdated).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
+  : '';
+---
+
+<Base title="kitchen-log — レシピ一覧">
+  <header class="site-header">
+    <div class="wrap">
+      <span class="logotype">kitchen-log</span>
+      <span class="site-tagline">陽平のレシピ帳</span>
+    </div>
+  </header>
+
+  <p class="ticker"><span class="wrap">登録レシピ {recipes.length}品 ・ 最終更新 {latestLabel}</span></p>
+
+  <FilterPanel facets={facets} />
+
+  <main class="recipe-list-section">
+    <div class="wrap">
+      <span class="en-label" aria-hidden="true">all recipes</span>
+      <h1 class="list-heading">レシピ一覧</h1>
+      <p class="list-count">登録順に表示しています</p>
+
+      <ul class="recipe-list">
+        {recipes.map((recipe) => <RecipeCard recipe={recipe} />)}
+      </ul>
+      <p class="no-results" id="no-results" hidden>条件に合うレシピが見つかりません。絞り込みを減らしてみてください。</p>
+    </div>
+  </main>
+
+  <footer class="site-footer list-footer">
+    <div class="wrap">kitchen-log — 陽平のレシピ帳</div>
+  </footer>
+</Base>
