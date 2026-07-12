@@ -2,6 +2,7 @@
 import {
   MEAL_REFERENCE,
   RADAR_AXES,
+  RADAR_LABEL_POSITIONS,
   classifyLevel,
   radarGeometry,
   radarRings,
@@ -40,17 +41,7 @@ const geometry = radarGeometry(nutrition);
 const rings = radarRings();
 const axisLines = radarAxisLines();
 
-// 軸ラベルの配置（mockups/recipe-detail.html と同じ固定座標）
-const LABEL_POSITIONS = [
-  { tx: 170, ty: 22, anchor: 'middle', rect: { x: 134, y: 2, w: 72, h: 30 } },
-  { tx: 254, ty: 86, anchor: 'start', rect: { x: 248, y: 64, w: 88, h: 34 } },
-  { tx: 254, ty: 178, anchor: 'start', rect: { x: 248, y: 156, w: 88, h: 34 } },
-  { tx: 170, ty: 240, anchor: 'middle', rect: { x: 130, y: 220, w: 80, h: 30 } },
-  { tx: 86, ty: 178, anchor: 'end', rect: { x: 20, y: 156, w: 70, h: 34 } },
-  { tx: 86, ty: 86, anchor: 'end', rect: { x: 14, y: 64, w: 76, h: 34 } },
-] as const;
-
-const axes = RADAR_AXES.map((axis, index) => ({ ...axis, ...LABEL_POSITIONS[index] }));
+const axes = RADAR_AXES.map((axis, index) => ({ ...axis, ...RADAR_LABEL_POSITIONS[index] }));
 
 const radarAria =
   '摂りたい栄養素の充足率。1食の目安に対して ' +

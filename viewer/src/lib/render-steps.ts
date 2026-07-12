@@ -16,7 +16,7 @@ export function stripRoleAnnotation(name: string): string {
   return name.replace(/（[^（）]*）/g, '').trim();
 }
 
-export type IngredientRef = {
+type IngredientRef = {
   kind: 'ingredient';
   id: string;
   displayName: string;

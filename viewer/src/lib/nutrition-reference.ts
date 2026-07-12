@@ -1,6 +1,16 @@
 // 「1食の目安」定数と栄養表示のロジック（設計書「栄養表示の基準定数」参照）
-// 出典: 厚生労働省「日本人の食事摂取基準（2025年版）」成人（18〜64歳）男女平均の
-// 1日推奨量・目標量 ÷ 3 を1食の目安とする
+// 出典: 厚生労働省「日本人の食事摂取基準（2025年版）」策定検討会報告書。
+// 成人（18〜64歳）の年齢区分値を男女それぞれ平均→男女平均→÷3（1食）で導出（2026-07-13にWebで裏取り済み）。
+//   エネルギー: 身体活動レベルII 男2650/女2000kcal → 2325 → 775
+//   たんぱく質: 推奨量 男65/女50g → 57.5 → 19
+//   脂質: 目標量20〜30%Eの中央25%E × 2325kcal ÷ 9 → 64.6g → 22
+//   炭水化物: 目標量50〜65%Eの中央57.5%E × 2325kcal ÷ 4 → 334g → 111
+//   食塩: 目標量 男7.5/女6.5g未満 → 7.0 → 2.3
+//   食物繊維: 目標量 男21/女18g以上 → 19.5 → 6.5
+//   ビタミンA: 推奨量 男883/女683μgRAE → 783 → 260
+//   ビタミンC: 推奨量 男女100mg → 33
+//   カルシウム: 推奨量 男767/女650mg → 708 → 235
+//   鉄: 推奨量 男7.25/女（月経あり）10.25mg → 8.75 → 2.9
 
 import type { Recipe } from '../schemas/recipe';
 
@@ -16,11 +26,11 @@ export const MEAL_REFERENCE: Nutrition = {
   fiberG: 6.5,
   vitaminAUg: 260,
   vitaminCMg: 33,
-  calciumMg: 240,
-  ironMg: 3.0,
+  calciumMg: 235,
+  ironMg: 2.9,
 };
 
-export type Level = 'high' | 'normal' | 'low';
+type Level = 'high' | 'normal' | 'low';
 
 /** 目安の120%以上=高め、80%以下=低め */
 export function classifyLevel(value: number, reference: number): Level {
@@ -79,12 +89,22 @@ export const RADAR_AXES = [
   },
 ] as const satisfies readonly { key: keyof Nutrition; label: string; dictKey: string; description: string }[];
 
-// SVG座標系（mockups/recipe-detail.html のレーダーと同じ）。
-// グリッド・基準リング・データ多角形はすべてこの定数群から導出する
+// レーダーのSVG座標系はこの定数群が正（初出はモックアップ由来）。
+// グリッド・基準リング・軸線・軸ラベル・データ多角形はすべてここから導出する
 const CX = 170;
 const CY = 125;
 const FULL_RING = 54; // 100%（1食の目安）の半径
 const MAX_RING = 90; // 外周（約166.7%で頭打ち）
+
+/** 軸ラベルの描画位置とタップ領域（viewBox 0 0 340 252 前提、RADAR_AXESと同順） */
+export const RADAR_LABEL_POSITIONS = [
+  { tx: 170, ty: 22, anchor: 'middle', rect: { x: 134, y: 2, w: 72, h: 30 } },
+  { tx: 254, ty: 86, anchor: 'start', rect: { x: 248, y: 64, w: 88, h: 34 } },
+  { tx: 254, ty: 178, anchor: 'start', rect: { x: 248, y: 156, w: 88, h: 34 } },
+  { tx: 170, ty: 240, anchor: 'middle', rect: { x: 130, y: 220, w: 80, h: 30 } },
+  { tx: 86, ty: 178, anchor: 'end', rect: { x: 20, y: 156, w: 70, h: 34 } },
+  { tx: 86, ty: 86, anchor: 'end', rect: { x: 14, y: 64, w: 76, h: 34 } },
+] as const;
 
 function pointAt(axisIndex: number, radius: number): { x: number; y: number } {
   const angle = ((-90 + (360 / RADAR_AXES.length) * axisIndex) * Math.PI) / 180;

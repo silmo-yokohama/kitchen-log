@@ -16,6 +16,6 @@ description: 確定済みの変更（レシピJSON・ドキュメント等）を
 10. 承認を得たら `gh pr merge --merge --delete-branch` でマージする。承認を得るまでは絶対にマージしない
 11. マージ後、`git checkout master` と `git pull` でローカルのmasterを最新化する（次の作業ブランチが古いmasterから分岐してコンフリクトの温床になるのを防ぐため）
 
-> **gh CLIが使えない環境での読み替え**: Claude Code on the web等、`gh` CLIが無い環境では次のように代替する。手順7は `mcp__github__create_pull_request`、手順8は `mcp__github__pull_request_read`（`get_check_runs` を用いたポーリング。`subscribe_pr_activity` が使える場合は優先してよいが、失敗したら速やかにポーリングへ切り替える）、手順10は `mcp__github__merge_pull_request`。マージ後のブランチ削除に対応するMCPツールは無いため `git push origin --delete <ブランチ名>` を試み、権限エラー等で失敗した場合はブランチを削除せずその旨をユーザーに報告する（マージ済みブランチは後でローカル環境から安全に削除できる）。
+> **gh CLIが使えない環境での読み替え**: Claude Code on the web等、`gh` CLIが無い環境では次のように代替する。手順7は `mcp__github__create_pull_request`、手順8は `mcp__github__pull_request_read`（`get_check_runs` を用いたポーリング）、手順10は `mcp__github__merge_pull_request`。マージ後のブランチ削除に対応するMCPツールは無いため `git push origin --delete <ブランチ名>` を試み、権限エラー等で失敗した場合はブランチを削除せずその旨をユーザーに報告する（マージ済みブランチは後でローカル環境から安全に削除できる）。
 
 > **注記**: `gh pr merge` は意図的に `.claude/settings.json` の許可リストに入れていない。マージ実行のたびにハーネスの許可プロンプトを挟むことで、手順10の「ユーザー承認を得るまで絶対にマージしない」を仕組みとしても担保するためであり、許可漏れではない。

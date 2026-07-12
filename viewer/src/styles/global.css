@@ -1,6 +1,6 @@
 /* ============================================================
    kitchen-log viewer — 「北欧、暮らしの道具店」design-md 準拠
-   （ビジュアル仕様は mockups/*.html で合意済み。トークンは同一）
+   （トークンは合意時点の mockups/*.html から移植。以後はこのファイルが正）
    - テキストは #444444 一色（純黒禁止）
    - 影なし完全フラット、セクションは背景色の切り替えで区切る
    - 游ゴシック Medium ベース、和文の letter-spacing は normal 厳守
@@ -344,12 +344,6 @@ h1, h2, h3 {
 }
 .step p { font-size: 17px; line-height: 1.75; }
 .step strong { font-weight: 700; }
-/* 状態変化の目安表現の圏点（データ整備後に使用。Step2ではクラスのみ用意） */
-.cue {
-  font-style: normal;
-  text-emphasis: filled dot var(--accent);
-  -webkit-text-emphasis: filled dot var(--accent);
-}
 
 /* ---- 詳細: 栄養 ---- */
 .nutrition-section { background: var(--bg-gray); }

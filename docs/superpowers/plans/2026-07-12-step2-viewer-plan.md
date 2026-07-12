@@ -1,5 +1,7 @@
 # Step2 Viewer Implementation Plan
 
+> 補記（2026-07-13）: 本計画は実行済み（PR #15）。以後のビジュアル・実装の正は `viewer/` 側であり、`mockups/*.html` は合意時点の記録。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** モックアップ2画面をAstroビューアとして実装し、選択式絞り込み・人前スケーリング・PWAマニフェストまで含むStep2を完成させる（デプロイのダッシュボード操作を除く）。

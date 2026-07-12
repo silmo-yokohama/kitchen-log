@@ -12,7 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
-    "validate:recipes": "vitest run tests/recipes.validate.test.ts"
+    "validate:recipes": "vitest run tests/"
   },
   "dependencies": {
     "astro": "^5.6.0"

@@ -1,6 +1,6 @@
 # viewer/ 開発規約
 
-このディレクトリはAstro製のPWAビューア（Step2以降で画面実装）。
+このディレクトリはAstro製のPWAビューア「陽平のレシピ帳」（一覧・詳細を実装済み）。
 
 - Astro Content Collections（`src/content.config.ts`）が `recipes/*.json` を読み込む。スキーマは `src/schemas/recipe.ts` を単一の情報源とする
 - 開発サーバー: `npm run dev --prefix viewer`
