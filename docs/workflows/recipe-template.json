@@ -4,6 +4,7 @@
   "dish": "",
   "tags": [],
   "servings": 2,
+  "summary": "",
   "ingredientSections": [
     {
       "section": "",
@@ -23,7 +24,12 @@
     "proteinG": 0,
     "fatG": 0,
     "carbohydrateG": 0,
-    "saltG": 0
+    "saltG": 0,
+    "fiberG": 0,
+    "vitaminAUg": 0,
+    "vitaminCMg": 0,
+    "calciumMg": 0,
+    "ironMg": 0
   },
   "benefits": [],
   "cautions": [],

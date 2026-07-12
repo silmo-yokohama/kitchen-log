@@ -23,6 +23,15 @@
 - `source.url`: 出典となる1つのURL（`url`入口・`cookgo`入口で取得したページ、または`zero`入口で強く参考にしたページ）。ビューアでリンクを張れるよう、URL単体で機械可読な形にしておく
 - `source.note`: そのレシピがどのようなやり取りで生まれたか（相談の内容、アレンジの経緯、CookGoからの補足情報等）を書く自由記述。URLを書く場所ではない
 
+## 総評（`summary`）の記述ルール
+
+ビューア詳細ページの冒頭にリード文として表示される、味と栄養の総評。200字程度で「味の特徴 → どんなときに食べたいか → 栄養面の要点 → 注意点」の流れで書く。
+
+- 栄養に関する記述は `nutrition-rules.md` の計算値と矛盾させない（俗説禁止も benefits/cautions と同様）
+- 好みプロファイルに基づくアレンジの経緯（例: 豚バラ→鶏肉）に触れてよい
+- 特定の既存レシピ名は出さず、そのレシピ単体で完結する内容にする（レシピ同士の組み合わせ提案は `balance` の役割。summary に他レシピ名を書くと、レシピが増えたときに文が陳腐化する）
+- 確定前レビューの対象に含め、ユーザーの合意を得てから保存する
+
 ## ユーザーとの会話ルール
 
 レシピ内容についてユーザーに質問・説明・確認を行う際は、常に料理の言葉（味・分量・食材・呼び方）に翻訳して伝える。`dish`/`tags`/`id`/`ingredientSections`等のJSONプロパティ名やスキーマ上の識別子・値をそのままユーザーに見せて判断を求めない。
@@ -51,7 +60,7 @@ JSONの組み立て・栄養計算に入る前に、元情報を料理の常識�
 4. `recipes/*.json` を Grep し、食材名・タグの表記を既存のものに合わせる（`naming-conventions.md` 参照）
 5. 新規レシピは `docs/workflows/recipe-template.json` をコピーして作成する（既存の別レシピファイルのコピーは禁止。`naming-conventions.md` 参照）
 6. `ingredientSections`（フェーズ別・id付き）と `stepSections`（下ごしらえ／調理／盛り付け等のフェーズ別、`{{id}}` 参照）を組み立てる。手順文は `step-writing-guidelines.md` に従う
-7. `nutrition-rules.md` の計算式で栄養価を算出し、`benefits`/`cautions`/`balance` を記述する
+7. `nutrition-rules.md` の計算式で栄養価（拡張栄養素5項目を含む）を算出し、`benefits`/`cautions`/`balance`/`summary`（総評）を記述する
 8. ユーザーに確定前レビューを提示する
 9. 確定後、`recipes/<id>.json` として保存する
 10. `/merge-recipe` を呼び出し、ブランチ作成からmasterへのマージまでを行う（手順の詳細は `.claude/commands/merge-recipe.md` 参照）

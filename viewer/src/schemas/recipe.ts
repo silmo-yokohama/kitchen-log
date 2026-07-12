@@ -44,6 +44,11 @@ const nutritionSchema = z
     fatG: z.number().nonnegative(),
     carbohydrateG: z.number().nonnegative(),
     saltG: z.number().nonnegative(),
+    fiberG: z.number().nonnegative(),
+    vitaminAUg: z.number().nonnegative(), // μgRAE（レチノール活性当量）
+    vitaminCMg: z.number().nonnegative(),
+    calciumMg: z.number().nonnegative(),
+    ironMg: z.number().nonnegative(),
   })
   .strict();
 
@@ -66,6 +71,7 @@ export const recipeSchema = z
     dish: z.string().min(1),
     tags: z.array(z.string().min(1)),
     servings: z.number().int().positive(),
+    summary: z.string().min(1), // 味・栄養の総評（詳細ページのリード文、200字程度）
     ingredientSections: z.array(ingredientSectionSchema).min(1),
     stepSections: z.array(stepSectionSchema).min(1),
     nutrition: nutritionSchema,
