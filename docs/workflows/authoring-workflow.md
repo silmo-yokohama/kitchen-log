@@ -57,7 +57,7 @@ JSONの組み立て・栄養計算に入る前に、元情報を料理の常識�
 1. 入口の種類（cookgo/url/text/zero）を確認し、元情報を取得する
 2. `profile.md` を読み、清水・パートナー・共通の好みを確認する
 3. 前述の「中間確認（組み立て前のサニティチェック）」を行い、人前・分量・構成の方針についてユーザーの合意を得る
-4. `recipes/*.json` を Grep し、食材名・タグの表記を既存のものに合わせる（`naming-conventions.md` 参照）
+4. `recipes/*.json` を Grep し、食材名の表記を既存のものに合わせる。カテゴリー・素材・タグは `masters/taxonomy.json` と照合し、無い値は先にマスタへ追加する（`naming-conventions.md` 参照）
 5. 新規レシピは `docs/workflows/recipe-template.json` をコピーして作成する（既存の別レシピファイルのコピーは禁止。`naming-conventions.md` 参照）
 6. `ingredientSections`（フェーズ別・id付き）と `stepSections`（下ごしらえ／調理／盛り付け等のフェーズ別、`{{id}}` 参照）を組み立てる。手順文は `step-writing-guidelines.md` に従う
 7. `nutrition-rules.md` の計算式で栄養価（拡張栄養素5項目を含む）を算出し、`benefits`/`cautions`/`balance`/`summary`（総評）を記述する
