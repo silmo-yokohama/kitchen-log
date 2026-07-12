@@ -1,4 +1,19 @@
 import { z } from 'astro/zod';
+import taxonomy from '../../../masters/taxonomy.json';
+
+// categories / mainIngredients / tags の値は masters/taxonomy.json を単一の情報源とする
+const masterValues = (list: readonly string[], label: string) =>
+  z.array(z.string().min(1)).superRefine((values, ctx) => {
+    values.forEach((value, index) => {
+      if (!list.includes(value)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [index],
+          message: `"${value}" is not listed in masters/taxonomy.json (${label})`,
+        });
+      }
+    });
+  });
 
 const UNIT_VALUES = [
   'g', 'ml', '大さじ', '小さじ', 'カップ',
@@ -69,7 +84,15 @@ export const recipeSchema = z
     id: z.string().min(1),
     title: z.string().min(1),
     dish: z.string().min(1),
-    tags: z.array(z.string().min(1)),
+    tags: masterValues(taxonomy.tags, 'tags'), // 属性系（さっぱり・時短等）のみ。0個以上
+    categories: masterValues(taxonomy.categories, 'categories').refine(
+      (values) => values.length >= 1,
+      { message: 'at least one category is required' },
+    ),
+    mainIngredients: masterValues(taxonomy.ingredients, 'ingredients').refine(
+      (values) => values.length >= 1,
+      { message: 'at least one main ingredient is required' },
+    ),
     servings: z.number().int().positive(),
     summary: z.string().min(1), // 味・栄養の総評（詳細ページのリード文、200字程度）
     ingredientSections: z.array(ingredientSectionSchema).min(1),
