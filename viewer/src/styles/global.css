@@ -1,0 +1,499 @@
+/* ============================================================
+   kitchen-log viewer — 「北欧、暮らしの道具店」design-md 準拠
+   （ビジュアル仕様は mockups/*.html で合意済み。トークンは同一）
+   - テキストは #444444 一色（純黒禁止）
+   - 影なし完全フラット、セクションは背景色の切り替えで区切る
+   - 游ゴシック Medium ベース、和文の letter-spacing は normal 厳守
+   - 数字のみ unicode-range で Georgia（セリフ）に混植
+   ============================================================ */
+
+/* 数字（0-9）と小数点・分数スラッシュだけをセリフ体に差し替える */
+@font-face {
+  font-family: "Digits";
+  src: local("Georgia"), local("Times New Roman");
+  unicode-range: U+0030-0039, U+002E, U+002F;
+}
+@font-face {
+  font-family: "Digits";
+  font-weight: 700;
+  src: local("Georgia Bold"), local("Georgia-Bold"), local("Georgia");
+  unicode-range: U+0030-0039, U+002E, U+002F;
+}
+
+:root {
+  --text: #444444;
+  --bg: #ffffff;
+  --bg-blue: #f2f7f9;
+  --bg-gray: #f7f7f7;
+  --accent: #c93a3a;        /* コーラル系を WCAG AA (4.5:1) まで深めたもの */
+  --accent-soft: #fb5c5c;   /* design-md 原色。装飾マーカー限定 */
+  --badge-yellow: #fff100;  /* 新着バッジ */
+  --ghost: #d9e5ea;         /* 装飾数字用の淡いブルーグレー */
+  --nv-high: #c93a3a;       /* 栄養価「高め」(白地に5.06:1) */
+  --nv-low: #1a6fae;        /* 栄養価「低め」(白地に5.35:1) */
+  --radar: #2f6d80;         /* レーダーチャート系列色 (白地に5.8:1) */
+  --leader: #c3d0d6;
+  --hairline: #e8ecee;
+  --font-serif: Georgia, "Times New Roman", serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Digits", "Yu Gothic Medium", "游ゴシック Medium", YuGothic, 游ゴシック体,
+    -apple-system, "system-ui",
+    "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP", メイリオ, Meiryo,
+    "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  font-size: 16px;
+  line-height: 1.6;
+  line-break: strict;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 560px; margin: 0 auto; padding: 0 20px; }
+
+a { color: var(--text); }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+h1, h2, h3 {
+  word-break: auto-phrase; /* 対応ブラウザでは文節単位で改行（漸進的強化） */
+  text-wrap: pretty;
+}
+
+/* 英字小ラベル（装飾）: 小文字イタリックなので字間追加は不要 */
+.en-label {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+/* ---- ヘッダー・ティッカー・フッター ---- */
+.site-header { background: var(--bg); padding: 20px 0; }
+.site-header .wrap { display: flex; align-items: baseline; gap: 12px; }
+.logotype {
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  text-decoration: none;
+}
+.logotype::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--accent-soft);
+  border-radius: 100px;
+  align-self: center;
+}
+.site-tagline { font-size: 12px; }
+
+.ticker { background: var(--bg-gray); padding: 8px 0; font-size: 12px; }
+.ticker .wrap { display: block; }
+
+.site-footer { padding: 32px 0; font-size: 12px; }
+.to-top { display: inline-block; padding: 10px 0; font-size: 13px; }
+
+/* ---- タグ ---- */
+.tag-list { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  font-size: 12px;
+  background: var(--bg-blue);
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+/* タグの色分け: 同じタグには常に同じ色（文字列ハッシュで tag-c1〜c5 を割り当て） */
+.tag-c1 { background: #f6eecb; } /* 麦わら色 */
+.tag-c2 { background: #f9e2dd; } /* 淡いコーラル */
+.tag-c3 { background: #e3ecdd; } /* セージグリーン */
+.tag-c4 { background: #dfebf1; } /* 水色 */
+.tag-c5 { background: #efe9e1; } /* 生成りベージュ */
+
+/* ---- 一覧: 絞り込みパネル ---- */
+.filter-panel {
+  background: var(--bg);
+  border-top: 1px solid var(--hairline);
+  padding: 16px 0 20px;
+}
+.facet-row { display: flex; flex-direction: column; gap: 6px; }
+.facet-row + .facet-row { margin-top: 12px; }
+.facet-label { font-size: 12px; font-weight: 700; }
+.facet-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.facet-chip {
+  border: 0;
+  background: var(--bg-blue);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1;
+  padding: 12px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.facet-chip[aria-pressed="true"] { background: var(--text); color: #ffffff; }
+.filter-reset {
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 10px 0;
+  margin-top: 4px;
+}
+
+/* ---- 一覧: レシピカード ---- */
+.recipe-list-section { background: var(--bg-blue); padding: 40px 0 96px; }
+.list-heading { font-size: 21px; font-weight: 700; line-height: 1.5; margin-bottom: 4px; }
+.list-count { font-size: 13px; margin-bottom: 24px; }
+.recipe-list { list-style: none; display: grid; gap: 16px; }
+.no-results { font-size: 15px; line-height: 1.8; padding: 24px 0; }
+.card {
+  display: block;
+  background: var(--bg);
+  padding: 24px;
+  text-decoration: none;
+  position: relative;
+  transition: background-color 0.15s ease;
+  animation: rise 0.4s ease both;
+}
+.recipe-list li:nth-child(2) .card { animation-delay: 0.06s; }
+.recipe-list li:nth-child(3) .card { animation-delay: 0.12s; }
+.card:hover { background: #fdfdfb; }
+.card:active { background: var(--bg-gray); }
+.card::after {
+  content: "›";
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  font-weight: 400;
+}
+.card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.badge-new {
+  background: var(--badge-yellow);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  font-style: italic;
+  font-family: var(--font-serif);
+  line-height: 1.36;
+  padding: 2px 10px;
+  border-radius: 100px;
+  flex: none;
+}
+.card-title { font-size: 18px; font-weight: 700; line-height: 1.5; margin-bottom: 12px; padding-right: 24px; }
+.card .tag-list { margin-bottom: 12px; }
+.card-servings { font-size: 13px; }
+.card-servings strong { font-weight: 700; font-size: 16px; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; transition: none; }
+}
+
+/* ---- 詳細: タイトルブロック ---- */
+.title-block { padding: 40px 0 48px; }
+.back-bar { background: var(--bg); border-bottom: 1px solid var(--hairline); padding: 12px 0; }
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  text-decoration: none;
+  padding: 12px 12px 12px 0; /* タップ領域44px確保 */
+  margin: -12px 0;
+}
+.back-link::before { content: "‹"; font-size: 18px; }
+.back-link:hover { text-decoration: underline; }
+.recipe-title { font-size: 27px; font-weight: 700; line-height: 1.45; text-wrap: balance; margin-bottom: 16px; }
+.title-block .tag-list { margin-bottom: 16px; }
+.servings-line { font-size: 15px; }
+.servings-line strong { font-weight: 700; font-size: 18px; }
+.recipe-lead {
+  font-size: 15px;
+  line-height: 1.9;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hairline);
+}
+.source-top-link { font-size: 13px; margin-top: 16px; }
+.source-top-link a { display: inline-block; font-weight: 700; padding: 10px 8px 10px 0; }
+.recipe-dates { font-size: 12px; margin-top: 4px; }
+
+/* ---- 詳細: 共通セクション ---- */
+.detail-section { padding: 48px 0; }
+.section-heading {
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.section-heading::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: var(--accent-soft);
+  flex: none;
+}
+.section-note { font-size: 13px; margin-bottom: 24px; }
+
+/* ---- 詳細: 人前セレクタ ---- */
+.servings-selector { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.servings-selector .selector-label { font-size: 13px; font-weight: 700; }
+.servings-option {
+  border: 0;
+  background: var(--bg-blue);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 100px;
+  cursor: pointer;
+}
+.servings-option[aria-pressed="true"] { background: var(--accent); color: #ffffff; }
+.servings-note { font-size: 12px; width: 100%; }
+
+/* ---- 詳細: 材料 ---- */
+.ingredients-section { background: var(--bg-blue); }
+.ing-group { background: var(--bg); padding: 20px 24px 8px; }
+.ing-group + .ing-group { margin-top: 16px; }
+.ing-group-name { font-size: 15px; font-weight: 700; padding-bottom: 8px; border-bottom: 1px solid var(--hairline); }
+.ing-list { list-style: none; }
+.ing { display: flex; align-items: baseline; gap: 8px; padding: 12px 0; font-size: 16px; }
+.ing + .ing { border-top: 1px dotted var(--hairline); }
+.ing-name { flex: none; }
+.ing-leader { flex: 1; border-bottom: 1px dotted var(--leader); transform: translateY(-4px); }
+.ing-amount { flex: none; font-weight: 700; }
+
+/* ---- 詳細: 作り方 ---- */
+.steps-section { background: var(--bg); }
+.phase { margin-bottom: 56px; }
+.phase:last-child { margin-bottom: 0; }
+.phase-name {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.phase-name::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--accent-soft);
+  border-radius: 100px;
+  flex: none;
+}
+.phase-index {
+  margin-left: auto;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--ghost);
+  user-select: none;
+}
+.phase-items { background: var(--bg-blue); padding: 14px 16px; margin-bottom: 24px; font-size: 13px; line-height: 1.7; }
+.phase-items dt { font-weight: 700; margin-bottom: 6px; }
+.phase-items dd { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  background: #f6eecb; /* 麦わら色: 淡水色の枠の中で材料が拾いやすいよう暖色に */
+  padding: 3px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.step-list { list-style: none; counter-reset: step; display: grid; gap: 28px; }
+.step { counter-increment: step; display: grid; grid-template-columns: 34px 1fr; gap: 14px; }
+.step::before {
+  content: counter(step);
+  width: 34px;
+  height: 34px;
+  border-radius: 100px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.step p { font-size: 17px; line-height: 1.75; }
+.step strong { font-weight: 700; }
+/* 状態変化の目安表現の圏点（データ整備後に使用。Step2ではクラスのみ用意） */
+.cue {
+  font-style: normal;
+  text-emphasis: filled dot var(--accent);
+  -webkit-text-emphasis: filled dot var(--accent);
+}
+
+/* ---- 詳細: 栄養 ---- */
+.nutrition-section { background: var(--bg-gray); }
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 8px;
+  margin-bottom: 40px;
+}
+.nutrition-tile { background: var(--bg); padding: 16px 8px; text-align: center; }
+.nutrition-value { display: block; font-size: 24px; font-weight: 700; line-height: 1.3; }
+.nutrition-unit { font-size: 12px; font-weight: 400; }
+.nutrition-label { display: block; font-size: 12px; margin-top: 4px; }
+.is-high .nutrition-value { color: var(--nv-high); }
+.is-low  .nutrition-value { color: var(--nv-low); }
+.nutrition-flag { display: block; font-size: 11px; font-weight: 700; margin-top: 2px; }
+.is-high .nutrition-flag { color: var(--nv-high); }
+.is-low  .nutrition-flag { color: var(--nv-low); }
+
+.sub-heading { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+.benefit-list, .caution-list { list-style: none; display: grid; gap: 8px; margin-bottom: 32px; }
+.benefit-list li, .caution-list li { background: var(--bg); padding: 14px 16px; font-size: 15px; line-height: 1.7; }
+.benefit-list li::before { content: "○ "; font-weight: 700; }
+.caution-list li { border-left: 3px solid var(--accent); }
+.balance-text { font-size: 15px; line-height: 1.8; }
+
+/* ---- 詳細: レーダー ---- */
+.radar-block { background: var(--bg); padding: 20px 24px; margin-bottom: 40px; }
+.radar-block .sub-heading { margin-bottom: 0; }
+.radar-caption { font-size: 12px; }
+.radar { display: block; width: 100%; max-width: 340px; margin: 8px auto 4px; }
+.radar .ax { font-size: 12px; font-weight: 700; fill: var(--text); }
+.ax-btn { cursor: pointer; }
+.ax-btn rect { fill: transparent; }
+.ax-btn text { text-decoration: underline dotted; text-underline-offset: 4px; }
+.ax-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.radar-note { font-size: 12px; line-height: 1.7; }
+.key {
+  display: inline-block;
+  width: 16px;
+  border-top: 2px solid var(--radar);
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.key-ref { border-top-style: dashed; border-top-color: var(--accent); }
+
+/* ---- 詳細: 栄養素説明ポップアップ ---- */
+.nutrient-dialog {
+  border: 0;
+  padding: 0;
+  background: var(--bg);
+  width: min(320px, calc(100vw - 48px));
+  margin: auto;
+}
+.nutrient-dialog::backdrop { background: rgba(40, 40, 40, 0.65); }
+.nutrient-inner { padding: 20px; }
+.nutrient-inner h2 {
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.nutrient-inner h2::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--accent-soft);
+  border-radius: 100px;
+  flex: none;
+}
+.nutrient-inner p { font-size: 14px; line-height: 1.8; }
+.nutrient-close {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 16px;
+  border: 0;
+  background: var(--bg-gray);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---- 詳細: 動画フローティングボタン＋モーダル ---- */
+.video-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 100px;
+  background: var(--accent);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.video-fab::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 9px solid #ffffff;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+}
+.video-fab:active { background: #a92f2f; }
+
+.video-dialog {
+  border: 0;
+  padding: 0;
+  background: var(--bg);
+  width: min(560px, calc(100vw - 32px));
+  margin: auto;
+}
+.video-dialog::backdrop { background: rgba(40, 40, 40, 0.65); }
+.video-dialog-inner { padding: 12px; }
+.video-holder { aspect-ratio: 16 / 9; background: var(--bg-gray); }
+.video-holder iframe { display: block; width: 100%; height: 100%; border: 0; }
+.video-dialog-title { font-size: 13px; font-weight: 700; margin: 12px 4px 0; }
+.video-close {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  border: 0;
+  background: var(--bg-gray);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.video-close:active { background: var(--hairline); }
+
+/* 詳細ページのフッターはFABと重ならないよう下部に余裕を持たせる */
+.detail-footer { background: var(--bg-blue); padding-bottom: 96px; }
+.list-footer { background: var(--bg-gray); }
