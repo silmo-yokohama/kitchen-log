@@ -1,0 +1,50 @@
+---
+interface Props {
+  servings: number;
+}
+
+const { servings } = Astro.props;
+const OPTIONS = [1, 2, 3, 4, 5, 6];
+---
+
+<div class="servings-selector" id="servings-selector" data-base-servings={servings}>
+  <span class="selector-label">人前を変更:</span>
+  {
+    OPTIONS.map((n) => (
+      <button type="button" class="servings-option" data-servings={n} aria-pressed={n === servings ? 'true' : 'false'}>
+        {n}
+      </button>
+    ))
+  }
+  <span class="servings-note">材料と手順の分量表示が切り替わります（栄養価は常に1人前あたり）</span>
+</div>
+
+<script>
+  // 人前スケーリングIsland: span.amount[data-amount][data-unit] を一括で書き換える
+  import { formatScaled } from '../lib/scale';
+
+  const root = document.getElementById('servings-selector');
+  if (root) {
+    const base = Number(root.dataset.baseServings);
+    const amounts = Array.from(document.querySelectorAll<HTMLElement>('span.amount[data-unit]'));
+    const servingsLabels = Array.from(document.querySelectorAll<HTMLElement>('[data-servings-label]'));
+
+    root.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('.servings-option');
+      if (!button) return;
+
+      for (const other of root.querySelectorAll('.servings-option')) {
+        other.setAttribute('aria-pressed', other === button ? 'true' : 'false');
+      }
+
+      const next = Number(button.dataset.servings);
+      const factor = next / base;
+      for (const el of amounts) {
+        const raw = el.dataset.amount;
+        const amount = raw === undefined || raw === '' ? null : Number(raw);
+        el.textContent = formatScaled(amount, el.dataset.unit ?? '', factor);
+      }
+      for (const label of servingsLabels) label.textContent = String(next);
+    });
+  }
+</script>

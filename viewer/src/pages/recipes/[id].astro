@@ -5,8 +5,11 @@ import Base from '../../layouts/Base.astro';
 import IngredientSections from '../../components/IngredientSections.astro';
 import StepSections from '../../components/StepSections.astro';
 import NutritionPanel from '../../components/NutritionPanel.astro';
+import ServingsSelector from '../../components/ServingsSelector.astro';
+import NutrientDialog from '../../components/NutrientDialog.astro';
+import VideoModal from '../../components/VideoModal.astro';
 import { tagColorClass } from '../../lib/tag-color';
-import { extractDomain } from '../../lib/source-link';
+import { extractDomain, extractYouTubeId } from '../../lib/source-link';
 
 export async function getStaticPaths() {
   const recipes = await getCollection('recipes');
@@ -19,6 +22,7 @@ const { recipe } = Astro.props as Props;
 const { data } = recipe;
 const labels = [...data.categories, ...data.mainIngredients, ...data.tags];
 const sourceUrl = data.source.url;
+const videoId = sourceUrl ? extractYouTubeId(sourceUrl) : null;
 ---
 
 <Base title={`${data.title} — kitchen-log`}>
@@ -36,6 +40,7 @@ const sourceUrl = data.source.url;
           {labels.map((label) => <li class={`tag ${tagColorClass(label)}`}>{label}</li>)}
         </ul>
         <p class="servings-line"><strong data-servings-label>{data.servings}</strong>人前</p>
+        <ServingsSelector servings={data.servings} />
         <p class="recipe-lead">{data.summary}</p>
         {
           sourceUrl && (
@@ -57,6 +62,9 @@ const sourceUrl = data.source.url;
       balance={data.balance}
     />
   </main>
+
+  <NutrientDialog />
+  {videoId && <VideoModal videoId={videoId} />}
 
   <footer class="site-footer detail-footer">
     <div class="wrap">
