@@ -7,6 +7,7 @@ const validRecipe = {
   dish: 'test-dish',
   tags: ['タグ1'],
   servings: 2,
+  summary: '甘辛の味付けでご飯が進む一品。たんぱく質がしっかり摂れるので、忙しい日の夕食にも向く。',
   ingredientSections: [
     {
       section: '合わせ調味料',
@@ -36,6 +37,11 @@ const validRecipe = {
     fatG: 12.5,
     carbohydrateG: 58.0,
     saltG: 3.1,
+    fiberG: 4.2,
+    vitaminAUg: 120,
+    vitaminCMg: 25,
+    calciumMg: 80,
+    ironMg: 1.8,
   },
   benefits: [],
   cautions: [],
@@ -204,6 +210,19 @@ describe('recipeSchema', () => {
     };
     const result = recipeSchema.safeParse(noPlaceholders);
     expect(result.success).toBe(true);
+  });
+
+  it('rejects a nutrition object missing the extended nutrient fields', () => {
+    const { fiberG, ...withoutFiber } = validRecipe.nutrition;
+    const broken = { ...validRecipe, nutrition: withoutFiber };
+    const result = recipeSchema.safeParse(broken);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects a recipe without a summary', () => {
+    const { summary, ...withoutSummary } = validRecipe;
+    const result = recipeSchema.safeParse(withoutSummary);
+    expect(result.success).toBe(false);
   });
 
   it('accepts newly added count units like 丁 and パック', () => {

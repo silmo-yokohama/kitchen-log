@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kitchen-log — レシピ一覧</title>
+<style>
+  /* ============================================================
+     kitchen-log mockup — 「北欧、暮らしの道具店」design-md 準拠
+     - テキストは #444444 一色（純黒禁止）
+     - 影なし完全フラット、セクションは背景色の切り替えで区切る
+     - 游ゴシック Medium ベース、和文の letter-spacing は normal 厳守
+     タイポグラフィの工夫:
+     - 数字のみ unicode-range で Georgia（セリフ）に混植
+     - 英字小ラベルは Georgia イタリック小文字（字間追加なし）
+     ============================================================ */
+
+  /* 数字（0-9）と小数点・分数スラッシュだけをセリフ体に差し替える */
+  @font-face {
+    font-family: "Digits";
+    src: local("Georgia"), local("Times New Roman");
+    unicode-range: U+0030-0039, U+002E, U+002F;
+  }
+  @font-face {
+    font-family: "Digits";
+    font-weight: 700;
+    src: local("Georgia Bold"), local("Georgia-Bold"), local("Georgia");
+    unicode-range: U+0030-0039, U+002E, U+002F;
+  }
+
+  :root {
+    --text: #444444;
+    --bg: #ffffff;
+    --bg-blue: #f2f7f9;
+    --bg-gray: #f7f7f7;
+    --accent: #c93a3a;        /* コーラル系を WCAG AA (4.5:1) まで深めたもの */
+    --accent-soft: #fb5c5c;   /* design-md 原色。装飾マーカー限定 */
+    --badge-yellow: #fff100;  /* 新着バッジ */
+    --hairline: #e8ecee;
+    --font-serif: Georgia, "Times New Roman", serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Digits", "Yu Gothic Medium", "游ゴシック Medium", YuGothic, 游ゴシック体,
+      -apple-system, "system-ui",
+      "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+      "Noto Sans JP", メイリオ, Meiryo,
+      "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg-blue);
+    font-size: 16px;
+    line-height: 1.6;
+    line-break: strict;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 0 20px; }
+  a { color: var(--text); }
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  h1, h2 {
+    word-break: auto-phrase; /* 対応ブラウザでは文節単位で改行（漸進的強化） */
+    text-wrap: pretty;
+  }
+
+  /* 英字小ラベル（装飾）: 小文字イタリックなので字間追加は不要 */
+  .en-label {
+    display: block;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+
+  /* ---- ヘッダー ---- */
+  .site-header {
+    background: var(--bg);
+    padding: 20px 0;
+  }
+  .site-header .wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .logotype {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .logotype::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: var(--accent-soft);
+    border-radius: 100px;
+    align-self: center;
+  }
+  .site-tagline {
+    font-size: 12px;
+  }
+
+  /* ---- ティッカー ---- */
+  .ticker {
+    background: var(--bg-gray);
+    padding: 8px 0;
+    font-size: 12px;
+  }
+
+  /* ---- 一覧 ---- */
+  .recipe-list-section {
+    padding: 40px 0 96px;
+  }
+  .list-heading {
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .list-count {
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .recipe-list {
+    list-style: none;
+    display: grid;
+    gap: 16px;
+  }
+  .card {
+    display: block;
+    background: var(--bg);
+    padding: 24px;
+    text-decoration: none;
+    position: relative;
+    transition: background-color 0.15s ease;
+    animation: rise 0.4s ease both;
+  }
+  .recipe-list li:nth-child(2) .card { animation-delay: 0.06s; }
+  .recipe-list li:nth-child(3) .card { animation-delay: 0.12s; }
+  .card:hover { background: #fdfdfb; }
+  .card:active { background: var(--bg-gray); }
+  .card::after {
+    content: "›";
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    font-weight: 400;
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .badge-new {
+    background: var(--badge-yellow);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 700;
+    font-style: italic;
+    font-family: var(--font-serif);
+    line-height: 1.36;
+    padding: 2px 10px;
+    border-radius: 100px;
+    flex: none;
+  }
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    padding-right: 24px;
+  }
+  .tag-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .tag {
+    font-size: 12px;
+    background: var(--bg-blue);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  /* タグの色分け: 同じタグには常に同じ色を割り当てる
+     （Astro移植時はタグ文字列のハッシュで tag-c1〜c5 を決める想定） */
+  .tag-c1 { background: #f6eecb; } /* 麦わら色 */
+  .tag-c2 { background: #f9e2dd; } /* 淡いコーラル */
+  .tag-c3 { background: #e3ecdd; } /* セージグリーン */
+  .tag-c4 { background: #dfebf1; } /* 水色 */
+  .tag-c5 { background: #efe9e1; } /* 生成りベージュ */
+  .card-servings {
+    font-size: 13px;
+  }
+  .card-servings strong { font-weight: 700; font-size: 16px; }
+
+  /* ---- フッター ---- */
+  .site-footer {
+    background: var(--bg-gray);
+    padding: 32px 0;
+    font-size: 12px;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <span class="logotype">kitchen-log</span>
+    <span class="site-tagline">陽平のレシピ帳</span>
+  </div>
+</header>
+
+<p class="ticker"><span class="wrap" style="display:block;">登録レシピ 2品 ・ 最終更新 2026年7月9日</span></p>
+
+<main class="recipe-list-section">
+  <div class="wrap">
+    <span class="en-label" aria-hidden="true">all recipes</span>
+    <h1 class="list-heading">レシピ一覧</h1>
+    <p class="list-count">登録順に表示しています</p>
+
+    <ul class="recipe-list">
+      <li>
+        <a class="card" href="recipe-detail.html">
+          <span class="card-head">
+            <span class="badge-new">new</span>
+          </span>
+          <h2 class="card-title">至高のキムチチゲ（鶏肉バージョン）</h2>
+          <ul class="tag-list" aria-label="タグ">
+            <li class="tag tag-c2">鍋料理</li>
+            <li class="tag tag-c1">韓国風</li>
+            <li class="tag tag-c5">キムチ</li>
+            <li class="tag tag-c4">うどん入り</li>
+            <li class="tag tag-c3">鶏肉</li>
+          </ul>
+          <p class="card-servings"><strong>2</strong>人前</p>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="recipe-detail.html">
+          <span class="card-head">
+            <span class="badge-new">new</span>
+          </span>
+          <h2 class="card-title">鶏ささみと小松菜の甘辛炒め</h2>
+          <ul class="tag-list" aria-label="タグ">
+            <li class="tag tag-c1">副菜</li>
+            <li class="tag tag-c4">時短</li>
+            <li class="tag tag-c3">鶏肉</li>
+            <li class="tag tag-c2">甘辛</li>
+          </ul>
+          <p class="card-servings"><strong>2</strong>人前</p>
+        </a>
+      </li>
+    </ul>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">kitchen-log — 陽平のレシピ帳</div>
+</footer>
+
+</body>
+</html>
