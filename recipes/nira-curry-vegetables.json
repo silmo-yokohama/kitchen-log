@@ -1,0 +1,111 @@
+{
+  "id": "nira-curry-vegetables",
+  "title": "スタミナにらカレー（野菜たっぷりバージョン）",
+  "dish": "nira-curry",
+  "tags": ["カレー", "丼", "豚肉", "野菜たっぷり", "スタミナ"],
+  "servings": 2,
+  "ingredientSections": [
+    {
+      "section": "下ごしらえ",
+      "items": [
+        { "id": "sake", "name": "酒", "amount": 2, "unit": "大さじ" },
+        { "id": "soy-sauce", "name": "醤油", "amount": 1, "unit": "大さじ" },
+        { "id": "oyster-sauce", "name": "オイスターソース", "amount": 1, "unit": "大さじ" },
+        { "id": "sugar", "name": "砂糖", "amount": 1, "unit": "小さじ" },
+        { "id": "chicken-stock", "name": "鶏がらスープの素", "amount": 2, "unit": "小さじ" },
+        { "id": "katakuriko", "name": "片栗粉", "amount": 1, "unit": "大さじ" },
+        { "id": "water-katakuriko", "name": "水（水溶き用）", "amount": 2, "unit": "大さじ" }
+      ]
+    },
+    {
+      "section": "調理",
+      "items": [
+        { "id": "pork", "name": "豚ひき肉", "amount": 200, "unit": "g" },
+        { "id": "garlic", "name": "にんにく", "amount": 10, "unit": "g" },
+        { "id": "ginger", "name": "生姜", "amount": 10, "unit": "g" },
+        { "id": "doubanjiang", "name": "豆板醤", "amount": 0.5, "unit": "小さじ" },
+        { "id": "curry-powder", "name": "カレー粉", "amount": 1, "unit": "大さじ" },
+        { "id": "shimeji", "name": "しめじ", "amount": 0.5, "unit": "パック" },
+        { "id": "oil", "name": "油", "amount": 2, "unit": "小さじ" },
+        { "id": "water", "name": "水", "amount": 400, "unit": "ml" },
+        { "id": "nira", "name": "ニラ", "amount": 1, "unit": "束" }
+      ]
+    },
+    {
+      "section": "トッピング",
+      "items": [
+        { "id": "potato", "name": "じゃがいも", "amount": 150, "unit": "g" },
+        { "id": "zucchini", "name": "ズッキーニ", "amount": 140, "unit": "g" },
+        { "id": "oil-topping", "name": "油（トッピング用）", "amount": 1, "unit": "小さじ" },
+        { "id": "salt-pepper-topping", "name": "塩こしょう（トッピング用）", "amount": null, "unit": "適量" }
+      ]
+    },
+    {
+      "section": "盛り付け",
+      "items": [
+        { "id": "egg-yolk", "name": "卵黄", "amount": null, "unit": "適量" },
+        { "id": "sansho", "name": "山椒", "amount": null, "unit": "適量" }
+      ]
+    }
+  ],
+  "stepSections": [
+    {
+      "section": "下ごしらえ",
+      "steps": [
+        "{{sake}}・{{soy-sauce}}・{{oyster-sauce}}・{{sugar}}・{{chicken-stock}}を混ぜ合わせ、合わせ調味料を作っておく。",
+        "{{katakuriko}}と{{water-katakuriko}}を混ぜ合わせ、水溶き片栗粉を作っておく。",
+        "{{garlic}}と{{ginger}}はみじん切りにする。{{shimeji}}は石づきを切り落として小房にほぐし、{{nira}}は2cm幅に切る。",
+        "{{potato}}は5mm厚さの半月切りにする（薄く切ることで、後で蓋をして焼いたときに芯まで火が通りやすくなる）。{{zucchini}}も7〜8mm厚さの半月切りにする。"
+      ]
+    },
+    {
+      "section": "調理",
+      "steps": [
+        "フライパンに{{oil}}を中火で熱し、{{pork}}を焼き色がつくまで2〜3分ほど炒める（中まで火が通っていなくてよい。この後さらに煮込むため）。",
+        "{{garlic}}・{{ginger}}・{{doubanjiang}}・{{curry-powder}}・{{shimeji}}を加え、香りが立つまで1分ほど炒め合わせる。",
+        "作っておいた合わせ調味料を加え、肉に絡めるように1分ほど炒め合わせる。",
+        "{{water}}を加え、フツフツと沸いてきたら中火のまま2分ほど煮詰める。",
+        "{{nira}}を加え、しんなりとするまで1分ほどさっと煮る。",
+        "火を弱め、水溶き片栗粉を少しずつ加えながら混ぜ、とろみがついたら火を止める。"
+      ]
+    },
+    {
+      "section": "トッピング",
+      "steps": [
+        "別のフライパンに{{oil-topping}}を中火で熱し、{{potato}}を並べ入れる。蓋をして3〜4分ほど焼き、途中で一度上下を返す（じゃがいもはズッキーニより火の通りに時間がかかるため、先に焼き始める）。",
+        "竹串を刺してスッと通るくらいじゃがいもが柔らかくなったら{{zucchini}}を加え、蓋をせずに2〜3分ほど炒め合わせる。",
+        "ズッキーニの切り口が透き通るような見た目になり、両方に軽く焼き色がついたら{{salt-pepper-topping}}を振って味を調え、火を止める。"
+      ]
+    },
+    {
+      "section": "盛り付け",
+      "steps": [
+        "器にご飯をよそい、カレーソースをかける。トッピングのじゃがいも・ズッキーニをのせ、お好みで{{egg-yolk}}をのせて{{sansho}}を振って完成。"
+      ]
+    }
+  ],
+  "nutrition": {
+    "energyKcal": 405,
+    "proteinG": 22.5,
+    "fatG": 21.9,
+    "carbohydrateG": 30.4,
+    "saltG": 3.9
+  },
+  "benefits": [
+    "豚ひき肉としめじから1人前あたり約22.5gのたんぱく質が摂れる",
+    "にんにく・生姜・しめじ・じゃがいも・ズッキーニ・ニラなど野菜がたっぷり入っており、1人前あたり約5.5gの食物繊維が摂れる"
+  ],
+  "cautions": [
+    "食塩相当量は1人前あたり約3.9gで、成人の食塩摂取目標値（男性7.5g未満/日、女性6.5g未満/日）の半分程度を占める。トッピングのじゃがいも・ズッキーニにふる塩こしょうは味を見ながら加える分のため計算に含めておらず、実際の食塩相当量はこれよりやや高くなる",
+    "この栄養価はご飯を含まない、カレーソースとトッピング部分のみの計算値。ご飯を加えるとエネルギー・炭水化物はさらに増える",
+    "脂質は1人前あたり約21.9gとやや高めなので、ダイエット中の食事管理では他の食事で脂質を抑えるなど調整するとよい"
+  ],
+  "balance": "たんぱく質と野菜がしっかり摂れる一皿完結型の丼もの。塩気のある味付けなので、副菜には酢の物やサラダなど、塩分控えめでさっぱりした一品を合わせるとバランスが取りやすい（パートナーも酢の効いた料理を好む）。",
+  "source": {
+    "type": "cookgo",
+    "url": "https://www.instagram.com/reel/DaHPv7Py5hX/",
+    "note": "CookGo共有ページ「スタミナにらカレー」（http://cookgo.life/share/DAYL4K）の材料・手順をもとに登録。元ページは2人前表記で、具材量（豚ひき肉200g・ニラ1束）から見てもこれは概ね妥当と判断した。しめじ0.5パック（約50g）は香味野菜と一緒に炒めてカレーソースに加え、じゃがいも中1個（約150g）とズッキーニ0.5本（約140g）は、煮込むと煮崩れ・とろみが出過ぎることを避けるため別フライパンで塩こしょうソテーにし、仕上げに後乗せするアレンジを追加した。参照元は共有ページに記載のInstagramリール。"
+  },
+  "createdAt": "2026-07-12",
+  "updatedAt": "2026-07-12"
+}
