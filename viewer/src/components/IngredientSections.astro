@@ -1,0 +1,38 @@
+---
+import { formatAmount } from '../lib/scale';
+import type { IngredientItem } from '../lib/render-steps';
+
+interface Props {
+  sections: { section: string; items: IngredientItem[] }[];
+  servings: number;
+}
+
+const { sections, servings } = Astro.props;
+---
+
+<section class="detail-section ingredients-section" aria-labelledby="ingredients-heading">
+  <div class="wrap">
+    <span class="en-label" aria-hidden="true">ingredients</span>
+    <h2 class="section-heading" id="ingredients-heading">材料</h2>
+    <p class="section-note"><span data-servings-label>{servings}</span>人前・工程ごとにまとめています</p>
+
+    {
+      sections.map((group) => (
+        <div class="ing-group">
+          <h3 class="ing-group-name">{group.section}</h3>
+          <ul class="ing-list">
+            {group.items.map((item) => (
+              <li class="ing">
+                <span class="ing-name">{item.name}</span>
+                <span class="ing-leader" />
+                <span class="ing-amount amount" data-amount={item.amount} data-unit={item.unit}>
+                  {formatAmount(item.amount, item.unit)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>

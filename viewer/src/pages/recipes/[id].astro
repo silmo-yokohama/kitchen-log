@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import type { InferGetStaticPropsType } from 'astro';
+import Base from '../../layouts/Base.astro';
+import IngredientSections from '../../components/IngredientSections.astro';
+import StepSections from '../../components/StepSections.astro';
+import NutritionPanel from '../../components/NutritionPanel.astro';
+import { tagColorClass } from '../../lib/tag-color';
+import { extractDomain } from '../../lib/source-link';
+
+export async function getStaticPaths() {
+  const recipes = await getCollection('recipes');
+  return recipes.map((recipe) => ({ params: { id: recipe.data.id }, props: { recipe } }));
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { recipe } = Astro.props as Props;
+const { data } = recipe;
+const labels = [...data.categories, ...data.mainIngredients, ...data.tags];
+const sourceUrl = data.source.url;
+---
+
+<Base title={`${data.title} — kitchen-log`}>
+  <header class="back-bar">
+    <div class="wrap">
+      <a class="back-link" href="/">レシピ一覧へ戻る</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="title-block">
+      <div class="wrap">
+        <h1 class="recipe-title">{data.title}</h1>
+        <ul class="tag-list" aria-label="タグ">
+          {labels.map((label) => <li class={`tag ${tagColorClass(label)}`}>{label}</li>)}
+        </ul>
+        <p class="servings-line"><strong data-servings-label>{data.servings}</strong>人前</p>
+        <p class="recipe-lead">{data.summary}</p>
+        {
+          sourceUrl && (
+            <p class="source-top-link">
+              <a href={sourceUrl} rel="noopener">元レシピを見る（{extractDomain(sourceUrl)}）→</a>
+            </p>
+          )
+        }
+        <p class="recipe-dates">登録日 {data.createdAt} ・ 更新日 {data.updatedAt}</p>
+      </div>
+    </div>
+
+    <IngredientSections sections={data.ingredientSections} servings={data.servings} />
+    <StepSections ingredientSections={data.ingredientSections} stepSections={data.stepSections} />
+    <NutritionPanel
+      nutrition={data.nutrition}
+      benefits={data.benefits}
+      cautions={data.cautions}
+      balance={data.balance}
+    />
+  </main>
+
+  <footer class="site-footer detail-footer">
+    <div class="wrap">
+      <a class="to-top" href="#">ページの先頭へ戻る ↑</a><br />
+      kitchen-log — 陽平のレシピ帳
+    </div>
+  </footer>
+</Base>
