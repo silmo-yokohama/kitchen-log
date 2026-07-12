@@ -1,5 +1,7 @@
 import { z } from 'astro/zod';
 import taxonomy from '../../../masters/taxonomy.json';
+import { QUALITATIVE_UNITS } from '../lib/scale';
+import { INGREDIENT_PLACEHOLDER } from '../lib/render-steps';
 
 // categories / mainIngredients / tags の値は masters/taxonomy.json を単一の情報源とする
 const masterValues = (list: readonly string[], label: string) =>
@@ -21,8 +23,6 @@ const UNIT_VALUES = [
   '丁', 'パック', '株', '袋', '缶', 'かけ', '尾',
   '少々', '適量', 'ひとつまみ',
 ] as const;
-
-const QUALITATIVE_UNITS: readonly string[] = ['少々', '適量', 'ひとつまみ'];
 
 const ingredientItemSchema = z
   .object({
@@ -118,7 +118,7 @@ export const recipeSchema = z
     const idSet = new Set(ids);
     recipe.stepSections.forEach((section, sectionIndex) => {
       section.steps.forEach((step, stepIndex) => {
-        for (const match of step.matchAll(/\{\{([^{}]+)\}\}/g)) {
+        for (const match of step.matchAll(INGREDIENT_PLACEHOLDER)) {
           if (!idSet.has(match[1])) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,

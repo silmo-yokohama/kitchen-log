@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MEAL_REFERENCE, classifyLevel, radarGeometry, RADAR_AXES } from './nutrition-reference';
+import { MEAL_REFERENCE, classifyLevel, radarGeometry, radarRings, ringPoints, RADAR_AXES } from './nutrition-reference';
 
 const kimchiNutrition = {
   energyKcal: 762,
@@ -42,5 +42,12 @@ describe('radarGeometry', () => {
     for (const axis of RADAR_AXES) {
       expect(kimchiNutrition).toHaveProperty(axis.key);
     }
+  });
+
+  it('derives the reference ring from the same constants as the data polygon', () => {
+    // 基準リング（100%）の頂点は、値=目安ちょうどのデータ点と一致する
+    const flat = Object.fromEntries(Object.entries(MEAL_REFERENCE)) as typeof MEAL_REFERENCE;
+    expect(radarRings().reference).toBe(radarGeometry(flat).dataPoints);
+    expect(ringPoints(54).startsWith('170,71')).toBe(true);
   });
 });

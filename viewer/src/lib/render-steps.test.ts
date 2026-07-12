@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { expandStepSections } from './render-steps';
+import { expandStepSections, type RecipeLike } from './render-steps';
 
-const recipe = {
+const recipe: RecipeLike = {
   ingredientSections: [
     {
       section: '下ごしらえ',

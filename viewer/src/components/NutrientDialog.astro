@@ -11,32 +11,10 @@
 </dialog>
 
 <script>
-  const NUTRIENTS: Record<string, { name: string; desc: string }> = {
-    protein: {
-      name: 'たんぱく質',
-      desc: '筋肉・皮膚・髪など、体そのものをつくる材料になる栄養素。肉・魚・卵・大豆製品・乳製品に多く含まれます。',
-    },
-    fiber: {
-      name: '食物繊維',
-      desc: 'おなかの調子を整え、食後の血糖値の急上昇を抑えてくれる成分。野菜・きのこ・海藻・豆類に多く含まれます。',
-    },
-    vitc: {
-      name: 'ビタミンC',
-      desc: '皮膚や血管を丈夫に保つコラーゲンづくりに欠かせないビタミン。野菜・果物・いも類に多く、水に溶けやすいので汁ごと食べる料理と相性が良いです。',
-    },
-    calcium: {
-      name: 'カルシウム',
-      desc: '骨と歯の材料になるミネラル。乳製品・豆腐などの大豆製品・小松菜のような青菜・小魚に多く含まれます。',
-    },
-    iron: {
-      name: '鉄',
-      desc: '血液が全身に酸素を運ぶために必要なミネラル。不足すると疲れやすくなります。赤身の肉・レバー・豆腐・青菜に多く含まれます。',
-    },
-    vita: {
-      name: 'ビタミンA',
-      desc: '目の働きや、皮膚・のど・鼻の粘膜を健康に保つビタミン。にんじんやニラなどの緑黄色野菜、レバー、卵に多く含まれます。',
-    },
-  };
+  // 名前・説明文はレーダーの軸定義（lib/nutrition-reference）を単一の情報源とする
+  import { RADAR_AXES } from '../lib/nutrition-reference';
+
+  const NUTRIENTS = new Map(RADAR_AXES.map((axis) => [axis.dictKey as string, axis]));
 
   const dialog = document.getElementById('nutrient-dialog') as HTMLDialogElement | null;
   const title = document.getElementById('nutrient-title');
@@ -45,10 +23,10 @@
 
   if (dialog && title && body && closeButton) {
     const open = (key: string | undefined) => {
-      const entry = key ? NUTRIENTS[key] : undefined;
+      const entry = key ? NUTRIENTS.get(key) : undefined;
       if (!entry) return;
-      title.textContent = entry.name;
-      body.textContent = entry.desc;
+      title.textContent = entry.label;
+      body.textContent = entry.description;
       dialog.showModal();
     };
 

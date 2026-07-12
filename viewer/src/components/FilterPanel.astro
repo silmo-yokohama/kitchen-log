@@ -70,12 +70,14 @@ const rows = [
       if (noResults) noResults.hidden = visibleCount > 0;
       resetButton.hidden = FACETS.every((facet) => selected[facet].length === 0);
 
-      const params = new URLSearchParams();
+      // ファセット以外のクエリパラメータとハッシュは保持する
+      const params = new URLSearchParams(window.location.search);
       for (const facet of FACETS) {
         if (selected[facet].length > 0) params.set(facet, selected[facet].join(','));
+        else params.delete(facet);
       }
       const query = params.toString();
-      history.replaceState(null, '', query ? `?${query}` : window.location.pathname);
+      history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`);
     };
 
     panel.addEventListener('click', (event) => {

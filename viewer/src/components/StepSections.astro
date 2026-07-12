@@ -1,6 +1,6 @@
 ---
 import { formatAmount } from '../lib/scale';
-import { expandStepSections, type IngredientItem } from '../lib/render-steps';
+import { expandStepSections, stripRoleAnnotation, type IngredientItem } from '../lib/render-steps';
 
 interface Props {
   ingredientSections: { section: string; items: IngredientItem[] }[];
@@ -10,9 +10,12 @@ interface Props {
 const { ingredientSections, stepSections } = Astro.props;
 const expanded = expandStepSections({ ingredientSections, stepSections });
 
-// 「この工程で使うもの」チップ: 同名フェーズの材料一覧（名前の補足（…）は省いて短く）
-const itemsBySection = new Map(ingredientSections.map((group) => [group.section, group.items]));
-const chipName = (name: string) => name.replace(/（[^（）]*）/g, '').trim();
+// 「この工程で使うもの」チップ: 同名フェーズの材料一覧（名前の補足（…）は省いて短く）。
+// 同名セクションが複数あっても取りこぼさないようマージする
+const itemsBySection = new Map<string, IngredientItem[]>();
+for (const group of ingredientSections) {
+  itemsBySection.set(group.section, [...(itemsBySection.get(group.section) ?? []), ...group.items]);
+}
 const phaseIndex = (index: number) => String(index + 1).padStart(2, '0');
 ---
 
@@ -35,7 +38,7 @@ const phaseIndex = (index: number) => String(index + 1).padStart(2, '0');
               <dd>
                 {itemsBySection.get(phase.section)!.map((item) => (
                   <span class="chip">
-                    {chipName(item.name)}{' '}<span class="amount" data-amount={item.amount} data-unit={item.unit}>{formatAmount(item.amount, item.unit)}</span>
+                    {stripRoleAnnotation(item.name)}{' '}<span class="amount" data-amount={item.amount} data-unit={item.unit}>{formatAmount(item.amount, item.unit)}</span>
                   </span>
                 ))}
               </dd>

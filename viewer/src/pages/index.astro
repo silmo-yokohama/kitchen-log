@@ -18,8 +18,12 @@ const latestUpdated = recipes
   .map((r) => r.data.updatedAt)
   .sort()
   .at(-1);
+// YYYY-MM-DD文字列を直接整形する（Dateを介するとビルド環境のタイムゾーンで日付がずれる）
 const latestLabel = latestUpdated
-  ? new Date(latestUpdated).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
+  ? (() => {
+      const [year, month, day] = latestUpdated.split('-').map(Number);
+      return `${year}年${month}月${day}日`;
+    })()
   : '';
 ---
 

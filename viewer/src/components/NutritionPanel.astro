@@ -4,6 +4,8 @@ import {
   RADAR_AXES,
   classifyLevel,
   radarGeometry,
+  radarRings,
+  radarAxisLines,
   type Nutrition,
 } from '../lib/nutrition-reference';
 
@@ -35,6 +37,8 @@ const tiles = TILES.map((tile) => {
 });
 
 const geometry = radarGeometry(nutrition);
+const rings = radarRings();
+const axisLines = radarAxisLines();
 
 // 軸ラベルの配置（mockups/recipe-detail.html と同じ固定座標）
 const LABEL_POSITIONS = [
@@ -84,26 +88,13 @@ const radarAria =
       <h3 class="sub-heading">摂りたい栄養素のバランス</h3>
       <p class="radar-caption">外側に広がるほど、この一皿でしっかり摂れます。栄養素名をタップすると説明が見られます</p>
       <svg class="radar" viewBox="0 0 340 252" role="img" aria-label={radarAria}>
-        <!-- 目盛り（5段階） -->
-        <polygon points="170,107 185.6,116 185.6,134 170,143 154.4,134 154.4,116" fill="none" stroke="#e8ecee"></polygon>
-        <polygon points="170,89 201.2,107 201.2,143 170,161 138.8,143 138.8,107" fill="none" stroke="#e8ecee"></polygon>
-        <polygon points="170,53 232.4,89 232.4,161 170,197 107.6,161 107.6,89" fill="none" stroke="#e8ecee"></polygon>
-        <polygon points="170,35 247.9,80 247.9,170 170,215 92.1,170 92.1,80" fill="none" stroke="#e8ecee"></polygon>
-        <!-- 軸線 -->
+        <!-- 目盛り・軸線・基準リングはデータ多角形と同じ定数から導出（lib/nutrition-reference） -->
+        {rings.grid.map((points) => <polygon points={points} fill="none" stroke="#e8ecee" />)}
         <g stroke="#e8ecee">
-          <line x1="170" y1="125" x2="170" y2="35"></line>
-          <line x1="170" y1="125" x2="247.9" y2="80"></line>
-          <line x1="170" y1="125" x2="247.9" y2="170"></line>
-          <line x1="170" y1="125" x2="170" y2="215"></line>
-          <line x1="170" y1="125" x2="92.1" y2="170"></line>
-          <line x1="170" y1="125" x2="92.1" y2="80"></line>
+          {axisLines.map((l) => <line x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />)}
         </g>
         <!-- ちょうど足りる量（赤い破線） -->
-        <polygon
-          points="170,71 216.8,98 216.8,152 170,179 123.2,152 123.2,98"
-          fill="none"
-          stroke="var(--accent)"
-          stroke-dasharray="4 3"></polygon>
+        <polygon points={rings.reference} fill="none" stroke="var(--accent)" stroke-dasharray="4 3"></polygon>
         <!-- このレシピ -->
         <polygon
           points={geometry.dataPoints}
