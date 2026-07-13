@@ -1,0 +1,67 @@
+---
+import { formatAmount } from '../lib/scale';
+import { expandStepSections, stripRoleAnnotation, type IngredientItem } from '../lib/render-steps';
+
+interface Props {
+  ingredientSections: { section: string; items: IngredientItem[] }[];
+  stepSections: { section: string; steps: string[] }[];
+}
+
+const { ingredientSections, stepSections } = Astro.props;
+const expanded = expandStepSections({ ingredientSections, stepSections });
+
+// 「この工程で使うもの」チップ: 同名フェーズの材料一覧（名前の補足（…）は省いて短く）。
+// 同名セクションが複数あっても取りこぼさないようマージする
+const itemsBySection = new Map<string, IngredientItem[]>();
+for (const group of ingredientSections) {
+  itemsBySection.set(group.section, [...(itemsBySection.get(group.section) ?? []), ...group.items]);
+}
+const phaseIndex = (index: number) => String(index + 1).padStart(2, '0');
+---
+
+<section class="detail-section steps-section" aria-labelledby="steps-heading">
+  <div class="wrap">
+    <span class="en-label" aria-hidden="true">how to cook</span>
+    <h2 class="section-heading" id="steps-heading">作り方</h2>
+    <p class="section-note">材料名には分量を添えています。工程の頭で使うものを確認できます</p>
+
+    {
+      expanded.map((phase, index) => (
+        <div class="phase">
+          <h3 class="phase-name">
+            {phase.section}
+            <span class="phase-index" aria-hidden="true">{phaseIndex(index)}</span>
+          </h3>
+          {itemsBySection.has(phase.section) && (
+            <dl class="phase-items">
+              <dt>この工程で使うもの</dt>
+              <dd>
+                {itemsBySection.get(phase.section)!.map((item) => (
+                  <span class="chip">
+                    {stripRoleAnnotation(item.name)}{' '}<span class="amount" data-amount={item.amount} data-unit={item.unit}>{formatAmount(item.amount, item.unit)}</span>
+                  </span>
+                ))}
+              </dd>
+            </dl>
+          )}
+          <ol class="step-list">
+            {phase.steps.map((parts) => (
+              <li class="step">
+                {/* strong内に改行を入れると表示上の余分なスペースになるため1行で書く */}
+                <p>
+                  {parts.map((part) =>
+                    part.kind === 'text' ? (
+                      part.text
+                    ) : (
+                      <strong>{part.displayName}{part.withAmount && <span class="amount" data-amount={part.amount} data-unit={part.unit}>{formatAmount(part.amount, part.unit)}</span>}</strong>
+                    ),
+                  )}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))
+    }
+  </div>
+</section>

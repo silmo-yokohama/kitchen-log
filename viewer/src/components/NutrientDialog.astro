@@ -1,0 +1,48 @@
+---
+// 栄養素の説明ポップアップ。説明文は全レシピ共通の固定辞書（レシピデータには持たせない）
+---
+
+<dialog class="nutrient-dialog" id="nutrient-dialog" aria-labelledby="nutrient-title">
+  <div class="nutrient-inner">
+    <h2 id="nutrient-title"></h2>
+    <p id="nutrient-body"></p>
+    <button type="button" class="nutrient-close" id="nutrient-close">閉じる</button>
+  </div>
+</dialog>
+
+<script>
+  // 名前・説明文はレーダーの軸定義（lib/nutrition-reference）を単一の情報源とする
+  import { RADAR_AXES } from '../lib/nutrition-reference';
+
+  const NUTRIENTS = new Map(RADAR_AXES.map((axis) => [axis.dictKey as string, axis]));
+
+  const dialog = document.getElementById('nutrient-dialog') as HTMLDialogElement | null;
+  const title = document.getElementById('nutrient-title');
+  const body = document.getElementById('nutrient-body');
+  const closeButton = document.getElementById('nutrient-close');
+
+  if (dialog && title && body && closeButton) {
+    const open = (key: string | undefined) => {
+      const entry = key ? NUTRIENTS.get(key) : undefined;
+      if (!entry) return;
+      title.textContent = entry.label;
+      body.textContent = entry.description;
+      dialog.showModal();
+    };
+
+    for (const button of document.querySelectorAll<HTMLElement>('.ax-btn[data-nutrient]')) {
+      button.addEventListener('click', () => open(button.dataset.nutrient));
+      button.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          open(button.dataset.nutrient);
+        }
+      });
+    }
+
+    closeButton.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+</script>

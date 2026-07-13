@@ -17,3 +17,6 @@ jobs:
           cache-dependency-path: viewer/package-lock.json
       - run: npm ci --prefix viewer
       - run: npm run test --prefix viewer
+      - run: npx astro check
+        working-directory: viewer
+      - run: npm run build --prefix viewer

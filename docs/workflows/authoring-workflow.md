@@ -6,7 +6,7 @@
 
 レシピの元情報は次の4種類のいずれかから得る。どの入口でも、最終的には同じ `recipeSchema`（`viewer/src/schemas/recipe.ts`）に準拠したJSONに変換する。
 
-1. **cookgo**: CookGoアプリの共有機能で得られる共有URL（`cookgo.life/ja/share/...`）を標準とする。WebFetchでレシピ名・人前・材料（分量・単位）・手順全文・栄養表示までテキストとして取得できる（検証実績は`docs/workflows/recipe-site-compatibility.md`参照。栄養価は表示値に依存せず`nutrition-rules.md`で自前算出する）。共有ページには元レシピ（参照元）へのリンクが載っていることがあるため必ず確認し、あればその元レシピURLを`source.url`に記録する（共有URLは有効期限が不明なため、恒久的なリンク先として元レシピを優先する）。元レシピのリンクが無い場合は共有URLを`source.url`に記録する。共有URLが使えない場合のみ、従来の共有→PDF出力（画像ベースのPDF）にフォールバックし、内容を読み上げてもらうか画像を直接解析して材料・手順を復元する
+1. **cookgo**: CookGoアプリの共有機能で得られる共有URL（`cookgo.life/share/...`。`/ja/share/...`のようにロケールが挟まる形もある）を標準とする。WebFetchでレシピ名・人前・材料（分量・単位）・手順全文・栄養表示までテキストとして取得できる（検証実績は`docs/workflows/recipe-site-compatibility.md`参照。栄養価は表示値に依存せず`nutrition-rules.md`で自前算出する）。共有ページには元レシピ（参照元）へのリンクが載っていることがあるため必ず確認し、あればその元レシピURLを`source.url`に記録する（共有URLは有効期限が不明なため、恒久的なリンク先として元レシピを優先する）。元レシピのリンクが無い場合は共有URLを`source.url`に記録する。共有URLが使えない場合のみ、従来の共有→PDF出力（画像ベースのPDF）にフォールバックし、内容を読み上げてもらうか画像を直接解析して材料・手順を復元する
 2. **url**: レシピサイトのURL。WebFetchで取得できる範囲の情報を元にする。取得可否の実績は`docs/workflows/recipe-site-compatibility.md`を参照。YouTube等の動画プラットフォームは概要欄・字幕がWebFetchで取得できないため対象外とし、動画ベースのレシピは最初からテキスト貼り付け（type: text）に切り替えるようユーザーに伝える（ログイン必須のInstagram等も同様に対象外）。取得したURLは`source.url`に記録する
 3. **text**: ユーザーが貼り付けた生のテキスト（材料・手順の書き出し等）
 4. **zero**: 冷蔵庫の中身や気分等から、ゼロベースで相談しながら組み立てる。ヒアリング・提案の詳細な流れは後述の「zero入口のヒアリングと提案」を参照
@@ -57,7 +57,7 @@ JSONの組み立て・栄養計算に入る前に、元情報を料理の常識�
 1. 入口の種類（cookgo/url/text/zero）を確認し、元情報を取得する
 2. `profile.md` を読み、清水・パートナー・共通の好みを確認する
 3. 前述の「中間確認（組み立て前のサニティチェック）」を行い、人前・分量・構成の方針についてユーザーの合意を得る
-4. `recipes/*.json` を Grep し、食材名・タグの表記を既存のものに合わせる（`naming-conventions.md` 参照）
+4. `recipes/*.json` を Grep し、食材名の表記を既存のものに合わせる。カテゴリー・素材・タグは `masters/taxonomy.json` と照合し、無い値は先にマスタへ追加する（`naming-conventions.md` 参照）
 5. 新規レシピは `docs/workflows/recipe-template.json` をコピーして作成する（既存の別レシピファイルのコピーは禁止。`naming-conventions.md` 参照）
 6. `ingredientSections`（フェーズ別・id付き）と `stepSections`（下ごしらえ／調理／盛り付け等のフェーズ別、`{{id}}` 参照）を組み立てる。手順文は `step-writing-guidelines.md` に従う
 7. `nutrition-rules.md` の計算式で栄養価（拡張栄養素5項目を含む）を算出し、`benefits`/`cautions`/`balance`/`summary`（総評）を記述する

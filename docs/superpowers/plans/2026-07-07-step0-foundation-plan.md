@@ -943,3 +943,5 @@ git commit -m "Add CI workflow to validate recipes on push/PR"
 - Step2: building the actual Astro pages/components (list, detail, search, tag filter, serving-size scaling).
 - Step3: the cooking-mode screen.
 - v2: Supabase schema for favorites / weekly plan / shopping list.
+
+> 補記（2026-07-13）: Step2は検索ではなく選択式絞り込みとして実装済み。Step3（調理モード）は作らないことに決定。

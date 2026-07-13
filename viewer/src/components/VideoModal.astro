@@ -1,0 +1,62 @@
+---
+// 参考動画のフローティングボタン＋モーダル。
+// 閉じたら一時停止、開き直すと続きから再開（iframeは破棄せず隠すだけ）。
+interface Props {
+  videoId: string;
+}
+
+const { videoId } = Astro.props;
+---
+
+<button type="button" class="video-fab" id="video-fab" aria-haspopup="dialog" data-video-id={videoId}>動画を見る</button>
+
+<dialog class="video-dialog" id="video-dialog" aria-label="参考動画">
+  <div class="video-dialog-inner">
+    <div class="video-holder" id="video-holder"></div>
+    <p class="video-dialog-title">参考動画（YouTube）</p>
+    <button type="button" class="video-close" id="video-close">閉じる（動画は一時停止されます）</button>
+  </div>
+</dialog>
+
+<script>
+  const fab = document.getElementById('video-fab');
+  const dialog = document.getElementById('video-dialog') as HTMLDialogElement | null;
+  const holder = document.getElementById('video-holder');
+  const closeButton = document.getElementById('video-close');
+
+  if (fab && dialog && holder && closeButton) {
+    let frame: HTMLIFrameElement | null = null;
+
+    // enablejsapi=1 の埋め込みに postMessage で再生・一時停止を命令する
+    const command = (func: 'playVideo' | 'pauseVideo') => {
+      frame?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: '' }), '*');
+    };
+
+    fab.addEventListener('click', () => {
+      dialog.showModal();
+      if (!frame) {
+        // 初回のみ iframe を生成（ページ初期表示ではYouTubeを一切読み込まない）
+        // 注意: YouTube埋め込みはReferer必須のため、file://直開きではエラー153になる
+        let params = 'enablejsapi=1&rel=0&playsinline=1';
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+          params += `&origin=${encodeURIComponent(window.location.origin)}`;
+        }
+        frame = document.createElement('iframe');
+        frame.src = `https://www.youtube-nocookie.com/embed/${fab.dataset.videoId}?${params}`;
+        frame.title = '参考動画';
+        frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        holder.appendChild(frame);
+      } else {
+        // 2回目以降: iframe は破棄していないので、前回の続きから再開
+        command('playVideo');
+      }
+    });
+
+    closeButton.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    // Esc・背景タップ・閉じるボタン、どの経路で閉じても必ず一時停止する
+    dialog.addEventListener('close', () => command('pauseVideo'));
+  }
+</script>

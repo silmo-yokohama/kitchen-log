@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { tagColorClass } from '../lib/tag-color';
+
+interface Props {
+  recipe: CollectionEntry<'recipes'>;
+}
+
+const { recipe } = Astro.props;
+const { data } = recipe;
+// カードのピルはカテゴリー→素材→タグの順で全部見せる
+const labels = [...data.categories, ...data.mainIngredients, ...data.tags];
+// NEWバッジは登録から14日以内（ビルド時点の判定）
+const isNew = Date.now() - new Date(data.createdAt).getTime() < 14 * 24 * 60 * 60 * 1000;
+---
+
+<li
+  data-recipe-card
+  data-categories={data.categories.join(',')}
+  data-ingredients={data.mainIngredients.join(',')}
+  data-tags={data.tags.join(',')}
+>
+  <a class="card" href={`/recipes/${data.id}/`}>
+    {
+      isNew && (
+        <span class="card-head">
+          <span class="badge-new">new</span>
+        </span>
+      )
+    }
+    <h2 class="card-title">{data.title}</h2>
+    <ul class="tag-list" aria-label="タグ">
+      {labels.map((label) => <li class={`tag ${tagColorClass(label)}`}>{label}</li>)}
+    </ul>
+    <p class="card-servings"><strong>{data.servings}</strong>人前</p>
+  </a>
+</li>

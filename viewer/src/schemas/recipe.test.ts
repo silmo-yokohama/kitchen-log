@@ -5,7 +5,9 @@ const validRecipe = {
   id: 'test-recipe',
   title: 'テストレシピ',
   dish: 'test-dish',
-  tags: ['タグ1'],
+  tags: ['時短'],
+  categories: ['副菜'],
+  mainIngredients: ['鶏肉'],
   servings: 2,
   summary: '甘辛の味付けでご飯が進む一品。たんぱく質がしっかり摂れるので、忙しい日の夕食にも向く。',
   ingredientSections: [
@@ -210,6 +212,36 @@ describe('recipeSchema', () => {
     };
     const result = recipeSchema.safeParse(noPlaceholders);
     expect(result.success).toBe(true);
+  });
+
+  it('rejects a category not in the taxonomy master', () => {
+    const broken = { ...validRecipe, categories: ['存在しないカテゴリ'] };
+    expect(recipeSchema.safeParse(broken).success).toBe(false);
+  });
+
+  it('rejects a main ingredient not in the taxonomy master', () => {
+    const broken = { ...validRecipe, mainIngredients: ['存在しない素材'] };
+    expect(recipeSchema.safeParse(broken).success).toBe(false);
+  });
+
+  it('rejects a tag not in the taxonomy master', () => {
+    const broken = { ...validRecipe, tags: ['存在しないタグ'] };
+    expect(recipeSchema.safeParse(broken).success).toBe(false);
+  });
+
+  it('rejects a recipe without categories', () => {
+    const broken = { ...validRecipe, categories: [] };
+    expect(recipeSchema.safeParse(broken).success).toBe(false);
+  });
+
+  it('rejects a recipe without main ingredients', () => {
+    const broken = { ...validRecipe, mainIngredients: [] };
+    expect(recipeSchema.safeParse(broken).success).toBe(false);
+  });
+
+  it('accepts an empty tags array', () => {
+    const noTags = { ...validRecipe, tags: [] };
+    expect(recipeSchema.safeParse(noTags).success).toBe(true);
   });
 
   it('rejects a nutrition object missing the extended nutrient fields', () => {

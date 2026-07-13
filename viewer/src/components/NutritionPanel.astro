@@ -1,0 +1,145 @@
+---
+import {
+  MEAL_REFERENCE,
+  RADAR_AXES,
+  RADAR_LABEL_POSITIONS,
+  classifyLevel,
+  radarGeometry,
+  radarRings,
+  radarAxisLines,
+  type Nutrition,
+} from '../lib/nutrition-reference';
+
+interface Props {
+  nutrition: Nutrition;
+  benefits: string[];
+  cautions: string[];
+  balance: string;
+}
+
+const { nutrition, benefits, cautions, balance } = Astro.props;
+
+const TILES = [
+  { key: 'energyKcal', label: 'エネルギー', unit: 'kcal' },
+  { key: 'proteinG', label: 'たんぱく質', unit: 'g' },
+  { key: 'fatG', label: '脂質', unit: 'g' },
+  { key: 'carbohydrateG', label: '炭水化物', unit: 'g' },
+  { key: 'saltG', label: '食塩相当量', unit: 'g' },
+] as const;
+
+const tiles = TILES.map((tile) => {
+  const level = classifyLevel(nutrition[tile.key], MEAL_REFERENCE[tile.key]);
+  return {
+    ...tile,
+    value: nutrition[tile.key],
+    levelClass: level === 'high' ? 'is-high' : level === 'low' ? 'is-low' : '',
+    flag: level === 'high' ? '▲ 高め' : level === 'low' ? '▼ 低め' : '標準',
+  };
+});
+
+const geometry = radarGeometry(nutrition);
+const rings = radarRings();
+const axisLines = radarAxisLines();
+
+const axes = RADAR_AXES.map((axis, index) => ({ ...axis, ...RADAR_LABEL_POSITIONS[index] }));
+
+const radarAria =
+  '摂りたい栄養素の充足率。1食の目安に対して ' +
+  RADAR_AXES.map(
+    (axis) => `${axis.label}${Math.round((nutrition[axis.key] / MEAL_REFERENCE[axis.key]) * 100)}%`,
+  ).join('、') +
+  '。';
+---
+
+<section class="detail-section nutrition-section" aria-labelledby="nutrition-heading">
+  <div class="wrap">
+    <span class="en-label" aria-hidden="true">nutrition facts</span>
+    <h2 class="section-heading" id="nutrition-heading">栄養価</h2>
+    <p class="section-note">
+      1人前あたりの計算値です。色は「1食の目安」（1日の食事摂取基準のおよそ1/3）との比較で、
+      <span style="color:var(--nv-high);font-weight:700;">▲高め</span>・<span style="color:var(--nv-low);font-weight:700;">▼低め</span>を示します
+    </p>
+
+    <div class="nutrition-grid">
+      {
+        tiles.map((tile) => (
+          <div class={`nutrition-tile ${tile.levelClass}`}>
+            <span class="nutrition-value">
+              {tile.value}
+              <span class="nutrition-unit">{tile.unit}</span>
+            </span>
+            <span class="nutrition-label">{tile.label}</span>
+            <span class="nutrition-flag">{tile.flag}</span>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="radar-block">
+      <h3 class="sub-heading">摂りたい栄養素のバランス</h3>
+      <p class="radar-caption">外側に広がるほど、この一皿でしっかり摂れます。栄養素名をタップすると説明が見られます</p>
+      <svg class="radar" viewBox="0 0 340 252" role="img" aria-label={radarAria}>
+        <!-- 目盛り・軸線・基準リングはデータ多角形と同じ定数から導出（lib/nutrition-reference） -->
+        {rings.grid.map((points) => <polygon points={points} fill="none" stroke="#e8ecee" />)}
+        <g stroke="#e8ecee">
+          {axisLines.map((l) => <line x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />)}
+        </g>
+        <!-- ちょうど足りる量（赤い破線） -->
+        <polygon points={rings.reference} fill="none" stroke="var(--accent)" stroke-dasharray="4 3"></polygon>
+        <!-- このレシピ -->
+        <polygon
+          points={geometry.dataPoints}
+          fill="rgba(47,109,128,0.16)"
+          stroke="var(--radar)"
+          stroke-width="2"
+          stroke-linejoin="round"></polygon>
+        <g fill="var(--radar)" stroke="#ffffff" stroke-width="2">
+          {geometry.dots.map((dot) => <circle cx={dot.x} cy={dot.y} r="4" />)}
+        </g>
+        <!-- 軸ラベル（タップで説明） -->
+        {
+          axes.map((axis) => (
+            <g class="ax-btn" data-nutrient={axis.dictKey} tabindex="0" role="button" aria-label={`${axis.label}の説明を開く`}>
+              <rect x={axis.rect.x} y={axis.rect.y} width={axis.rect.w} height={axis.rect.h} />
+              <text class="ax" x={axis.tx} y={axis.ty} text-anchor={axis.anchor}>
+                {axis.label}
+              </text>
+            </g>
+          ))
+        }
+      </svg>
+      <p class="radar-note">
+        <span class="key"></span>このレシピ　<span class="key key-ref"></span>1食でちょうど足りる量
+      </p>
+    </div>
+
+    {
+      benefits.length > 0 && (
+        <>
+          <h3 class="sub-heading">栄養面の良い点</h3>
+          <ul class="benefit-list">
+            {benefits.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    {
+      cautions.length > 0 && (
+        <>
+          <h3 class="sub-heading">注意点</h3>
+          <ul class="caution-list">
+            {cautions.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    <h3 class="sub-heading">バランスのヒント</h3>
+    <p class="balance-text">{balance}</p>
+  </div>
+</section>
